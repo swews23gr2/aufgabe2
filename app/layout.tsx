@@ -4,6 +4,9 @@ import {PropsWithChildren} from "react";
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.css";
 import {BoostrapJsImport} from "@/components/BoostrapJsImport";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
+config.autoAddCss = false;
 
 const inter = Inter({
     subsets: ["latin"],
