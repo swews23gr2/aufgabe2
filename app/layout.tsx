@@ -5,7 +5,9 @@ import "./globals.css";
 import "bootstrap/dist/css/bootstrap.css";
 import {BoostrapJsImport} from "@/components/BoostrapJsImport";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { config } from "@fortawesome/fontawesome-svg-core";
+import {config} from "@fortawesome/fontawesome-svg-core";
+import {ApplicationContainerComponent} from "@/components/ApplicationContainerComponent";
+
 config.autoAddCss = false;
 
 const inter = Inter({
@@ -23,7 +25,11 @@ export default function RootLayout(props: PropsRootLayout) {
     return (
         <html lang="de">
         <BoostrapJsImport/>
-        <body className={inter.className}>{props.children}</body>
+        <body className={inter.className}>
+        <ApplicationContainerComponent>
+            {props.children}
+        </ApplicationContainerComponent>
+        </body>
         </html>
     );
 };
