@@ -1,9 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWarning } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faWarning} from "@fortawesome/free-solid-svg-icons";
+import {ExtendedStyleProps} from "@/theme/ExtendedStyleProps";
 
 export default function Home() {
     return (
-        <main className={styles.mainContent}>
+        <main {...styles.mainContent("grey")}>
             <FontAwesomeIcon
                 icon={faWarning}
                 style={{ color: "red", fontSize: 30 }}
@@ -14,6 +15,11 @@ export default function Home() {
     )
 }
 
-const styles = {
-    mainContent: `display-4 blockquote`,
+const styles: ExtendedStyleProps = {
+    mainContent: (bgColor: string) => ({
+        className: `display-4 blockquote`,
+        style: {
+            backgroundColor: bgColor,
+        },
+    }),
 }
