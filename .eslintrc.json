@@ -10,38 +10,22 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "unicorn",
-    "sonarjs",
     "prettier",
-    "promise",
     "import",
-    "security",
-    "security-node",
     "prefer-arrow",
-    "regexp",
-    "jest",
-    "jest-formatting"
+    "regexp"
   ],
   "extends": [
     "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic-type-checked",
     "eslint:recommended",
-    "plugin:unicorn/recommended",
     "plugin:prettier/recommended",
-    "plugin:sonarjs/recommended",
     "prettier",
-    "plugin:n/recommended",
-    "plugin:promise/recommended",
-    "plugin:security/recommended",
-    "plugin:security-node/recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
     "plugin:eslint-comments/recommended",
     "plugin:regexp/recommended",
-    "plugin:jest/recommended",
-    "plugin:jest/style",
-    "plugin:jest-formatting/strict"
+    "plugin:@next/next/recommended"
   ],
   "root": true,
   "env": {
@@ -50,6 +34,9 @@
     "jest": true
   },
   "rules": {
-    // ... (Hier folgen die ESLint-Regeln, die du bereitgestellt hast)
+    "prettier/prettier": "error",
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
