@@ -1,0 +1,18 @@
+# TODO vor dem Merge
+
+- [ ] **Branch auf dem aktuellen Stand?**
+
+  1.  _(Optional) `git checkout <dein-branch-für-den-PR>`_
+  2.  `git fetch origin main`
+  3.  `git rebase origin/main`
+
+- [ ] **Anwendung startet**
+
+  - Führe aus: `npm run dev`
+
+- [ ] **Formatiert mit Prettier?**
+
+  - Führe aus: `npm run prettier`
+
+- [ ] **Auf Fehler überprüft mit ESLint?**
+  - Führe aus: `npm run lint`
