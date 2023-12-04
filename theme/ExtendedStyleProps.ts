@@ -1,11 +1,8 @@
-import {CSSProperties} from "react";
+import { CSSProperties } from 'react';
 
 type CustomStyle = {
-    className?: string
-    style?: CSSProperties
-}
+    className?: string;
+    style?: CSSProperties;
+};
 
-export type ExtendedStyleProps = Record<
-    string,
-    (...arg: any[]) => CustomStyle
->
+export type ExtendedStyleProps = Record<string, (...arg: any[]) => CustomStyle>;
