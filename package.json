@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier": "prettier --cache --write \"**/*.+(js|jsx|ts|tsx)\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -24,13 +25,23 @@
     "sass": "^1.69.5"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "14.0.3",
     "@types/axios": "^0.14.0",
     "@types/bootstrap": "^5.2.10",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "@typescript-eslint/eslint-plugin": "6.13.1",
+    "eslint": "8.55.0",
     "eslint-config-next": "14.0.3",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-eslint-comments": "3.2.0",
+    "eslint-plugin-import": "2.29.0",
+    "eslint-plugin-next": "0.0.0",
+    "eslint-plugin-prefer-arrow": "1.2.3",
+    "eslint-plugin-prettier": "5.0.1",
+    "eslint-plugin-regexp": "2.1.1",
+    "prettier": "3.1.0",
     "typescript": "^5"
   }
 }
