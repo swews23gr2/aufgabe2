@@ -16,6 +16,7 @@
     "regexp"
   ],
   "extends": [
+    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "eslint:recommended",
     "plugin:prettier/recommended",
