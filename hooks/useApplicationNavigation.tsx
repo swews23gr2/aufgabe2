@@ -9,6 +9,7 @@ import {
 
 type NavigationButton = {
     label: string;
+    // eslint-disable-next-line no-undef
     icon: JSX.Element;
     isActive: boolean;
     onClick: () => void;

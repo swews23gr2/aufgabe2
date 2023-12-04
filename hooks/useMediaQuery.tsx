@@ -18,8 +18,9 @@ export const useMediaQuery = (): MediaQuerySize => {
     }, []);
 
     const handleScreenSize = (uiEvent: UIEvent) => {
-        const { currentTarget } = uiEvent!;
-        // @ts-ignore
+        const { currentTarget } = uiEvent;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         const { innerWidth } = currentTarget as EventTarget;
 
         if (innerWidth >= 576 && innerWidth <= 768) {
