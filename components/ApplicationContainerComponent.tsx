@@ -2,6 +2,7 @@ import React, {PropsWithChildren} from 'react';
 import {NavigationBarComponent} from "@/components/NavigationBarComponent";
 import {FooterComponent} from "@/components/FooterComponent";
 import {ExtendedStyleProps} from "@/theme/ExtendedStyleProps";
+import {BottomNavigationComponent} from "@/components/BottomNavigationComponent";
 
 type Props = PropsWithChildren & {}
 
@@ -13,6 +14,7 @@ export const ApplicationContainerComponent: React.FC<Props> = (props: Props) => 
                 {props.children}
             </main>
             <FooterComponent/>
+            <BottomNavigationComponent/>
         </div>
     )
 }

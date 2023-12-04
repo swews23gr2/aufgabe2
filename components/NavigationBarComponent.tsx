@@ -2,41 +2,18 @@
 import React from 'react';
 import {ExtendedStyleProps} from "@/theme/ExtendedStyleProps";
 import Link from "next/link";
+import {useMediaQuery} from "@/hooks/useMediaQuery";
+import {useApplicationNavigation} from "@/hooks/useApplicationNavigation";
 
-type NavigationButton = {
-    label: string
-    isActive: boolean
-    onClick: () => void
-}
 export const NavigationBarComponent: React.FC = () => {
 
-    const navigationButtons: NavigationButton[] = [
-        {
-            label: "Startseite",
-            isActive: true,
-            onClick: () => alert("In development")
-        },
-        {
-            label: "Bücher",
-            isActive: false,
-            onClick: () => alert("In development")
-        },
-        {
-            label: "Buch anlegen",
-            isActive: false,
-            onClick: () => alert("In development")
-        },
-        {
-            label: "Anmelden",
-            isActive: false,
-            onClick: () => alert("In development")
-        },
-    ]
+    const { isSmall } = useMediaQuery()
+    const { navigationButtons } = useApplicationNavigation()
 
     return (
-        <nav {...styles.navbarContainer()}>
+        <nav {...styles.navbarContainer(isSmall)}>
             <div {...styles.navbarContentContainer()}>
-                <Link href="#" {...styles.brand()}>HKA Bücherverwaltung</Link>
+                <Link href="/" {...styles.brand()}>HKA Bücherverwaltung</Link>
                 <div {...styles.navbarButtonContainer()}>
                     {navigationButtons.map(button =>
                         <button
@@ -55,7 +32,7 @@ export const NavigationBarComponent: React.FC = () => {
 }
 
 const styles: ExtendedStyleProps = {
-    navbarContainer: () => ({
+    navbarContainer: (isScreenSmall: boolean) => ({
         style: {
             display: "grid",
             justifyItems: "center",
@@ -66,12 +43,9 @@ const styles: ExtendedStyleProps = {
             top: 0,
             left: 0,
             right: 0,
-            //zIndex: 2000,
-            padding: "var(--padding-1) var(--padding-10)",
+            zIndex: 2000,
+            padding: `${isScreenSmall ? "var(--padding-1) var(--padding-2)" : "var(--padding-1) var(--padding-10)"}`,
             boxShadow: "0 0 15px grey",
-            "@media screen and (min-width: 900px)": {
-                padding: "var(--padding-1) var(--padding-5)",
-            },
         },
     }),
 
@@ -95,6 +69,7 @@ const styles: ExtendedStyleProps = {
     }),
 
     navbarButtonContainer: () => ({
+        className: "d-none d-lg-block d-md-none-sm-none",
         style: {
             display: "flex",
         }

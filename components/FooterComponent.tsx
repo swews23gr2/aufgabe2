@@ -24,7 +24,7 @@ const styles: ExtendedStyleProps = {
             backgroundColor: "var(--color-main)",
             padding: "var(--padding-4) var(--padding-8)",
             gap: "var(--gap-3)",
-        }
+        },
     }),
 
     footerWrapper: () => ({
@@ -34,26 +34,27 @@ const styles: ExtendedStyleProps = {
             justifyContent: "space-between",
             alignItems: "center",
             alignContent: "center",
-        }
+            textAlign: "center",
+        },
     }),
 
     footerContent: () => ({
         style: {
             overflow: "hidden",
-        }
+        },
     }),
 
     brand: () => ({
         style: {
             fontSize: "var(--font-large-size)",
             fontWeight: 400,
-        }
+        },
     }),
 
     rightsContainer: () => ({
        style: {
            overflow: "hidden",
            fontSize: "var(--font-small-size)",
-       }
+       },
     }),
 }

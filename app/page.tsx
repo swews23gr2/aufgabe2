@@ -1,8 +1,10 @@
 "use client"
 import {ExtendedStyleProps} from "@/theme/ExtendedStyleProps";
 import {CenteredSectionComponent} from "@/components/shared/CenteredSectionComponent";
-import React from "react";
+import React, {useRef} from "react";
 import Image from "next/image";
+import {useMediaQuery} from "@/hooks/useMediaQuery";
+import {scrollIntoView} from "@/helper/scrollIntoView";
 
 type HeroSectionButton = {
     label: string
@@ -16,6 +18,9 @@ type SoftwareFeature = {
 }
 export default function Home() {
 
+    const { isSmall } = useMediaQuery()
+    const featureSectionRef = useRef<HTMLDivElement | null>(null)
+
     const heroSectionButtons: HeroSectionButton[] = [
         {
             label: "Zu den Büchern",
@@ -23,7 +28,7 @@ export default function Home() {
         },
         {
             label: "Mehr erfahren",
-            onClick: () => alert("In development")
+            onClick: () => scrollIntoView(featureSectionRef.current)
         },
     ]
 
@@ -45,7 +50,7 @@ export default function Home() {
             <div {...styles.heroSectionWrapper()}>
                 <CenteredSectionComponent>
                     <div {...styles.heroSectionContainer()}>
-                        <div {...styles.heroSectionTextBlock()}>
+                        <div {...styles.heroSectionTextBlock(isSmall)}>
                             <div {...styles.heroSectionTitleLarge()}>
                                 Ändern Sie die Art und Weise, wie Sie Ihre Bücher verwalten
                             </div>
@@ -71,7 +76,7 @@ export default function Home() {
                                 width={769}
                                 height={646}
                                 src={"/hero_alt_alt_large.png"}
-                                {...styles.heroSectionImage()}
+                                {...styles.heroSectionImage(isSmall)}
                                 alt={"Bild des Hero-Abschnitt"}
                             />
                         </div>
@@ -80,14 +85,14 @@ export default function Home() {
             </div>
 
             <CenteredSectionComponent>
-                <div {...styles.featureSectionContent()}>
+                <div ref={featureSectionRef} {...styles.featureSectionContent()}>
                     <div {...styles.featureTitleContainer()}>
                         <div {...styles.subtitlePrimary()}>Unsere Kompetenzen</div>
                         <div {...styles.sectionTitleLarge()}>Features unserer Software</div>
                     </div>
                     <div {...styles.featuresContainer()}>
                         {featuresDerSoftware.map(feature =>
-                            <div key={feature.title} {...styles.featureItem()}>
+                            <div key={feature.title} {...styles.featureItem(isSmall)}>
                                 <div {...styles.featureTextBlock()}>
                                     <div {...styles.featureTitle()}>{feature.title}</div>
                                     <div {...styles.featureDescription()}>{feature.beschreibung}</div>
@@ -97,11 +102,11 @@ export default function Home() {
                                     height={291}
                                     src={feature.image}
                                     alt={feature.title}
+                                    {...styles.featurePicture(isSmall)}
                                 />
                             </div>
                         )}
                     </div>
-
                 </div>
             </CenteredSectionComponent>
         </div>
@@ -119,7 +124,6 @@ const styles: ExtendedStyleProps = {
         style: {
             display: "grid",
             justifyItems: "center",
-            marginBottom: "var(--gap-10)",
             backgroundColor: "var(--color-secondary)",
         },
     }),
@@ -132,14 +136,14 @@ const styles: ExtendedStyleProps = {
         },
     }),
 
-    heroSectionTextBlock: () => ({
+    heroSectionTextBlock: (isScreenSmall: boolean) => ({
         style: {
             display: "grid",
             gridGap: "var(--gap-2)",
             justifyContent: "center",
             justifyItems: "center",
             textAlign: "center",
-            maxWidth: "60%",
+            maxWidth: `${isScreenSmall ? "unset" : "60%"}`,
         },
     }),
 
@@ -174,12 +178,15 @@ const styles: ExtendedStyleProps = {
         },
     }),
 
-    heroSectionImage: () => ({
+    heroSectionImage: (isScreenSmall: boolean) => ({
         className: "mt-5",
         style: {
-            maxWidth: "var(--hero-section-thumbnail-width)",
+            //maxWidth: "var(--hero-section-thumbnail-width)",
             borderRadius: "8px 8px 0 0",
             boxShadow: "0 0 50px grey",
+            width: `${isScreenSmall ? "100%" : "769px"}`,
+            height: "auto",
+            objectFit: "contain",
         },
     }),
 
@@ -189,17 +196,18 @@ const styles: ExtendedStyleProps = {
             gridGap: "var(--gap-8)",
             justifyItems: "center",
             justifyContent: "center",
+            paddingTop: "var(--gap-10)",
         },
     }),
 
     featureTitleContainer: () => ({
         style: {
-            width: "100%",
             display: "flex",
             flexDirection: "column",
             alignContent: "center",
             alignItems: "center",
             textAlign: "center",
+            padding: "0 var(--padding-2)"
         },
     }),
 
@@ -225,14 +233,20 @@ const styles: ExtendedStyleProps = {
         },
     }),
 
-    featureItem: () => ({
+    featureItem: (isScreenSmall: boolean) => ({
         style: {
             display: "grid",
-            gridTemplateColumns: "1.5fr auto",
+            gridTemplateColumns: `${isScreenSmall ? "1fr" : "1.5fr auto"}`,
             gridGap: "var(--gap-9)",
             alignItems: "center",
             alignContent: "center",
-            padding: "0 calc(2 * var(--padding-10)) calc(2 * var(--padding-10)) calc(2 * var(--padding-10))",
+            padding: `${
+                isScreenSmall ?
+                    "0 var(--padding-2) calc(2 * var(--padding-10)) var(--padding-2)" :
+                    "0 calc(2 * var(--padding-10)) calc(2 * var(--padding-10)) calc(2 * var(--padding-10))"
+            }`,
+            justifyItems: `${isScreenSmall ? "center" : "unset"}`,
+            textAlign: `${isScreenSmall ? "center" : "left"}`
         },
     }),
 
@@ -255,4 +269,12 @@ const styles: ExtendedStyleProps = {
             color: "var(--color-on-secondary)",
         },
     }),
+
+    featurePicture: (isScreenSmall: boolean) => ({
+        style: {
+            width: `${isScreenSmall ? "100%" : "346px"}`,
+            height: "auto",
+            objectFit: "contain",
+        }
+    })
 }
