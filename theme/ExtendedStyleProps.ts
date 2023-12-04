@@ -5,4 +5,8 @@ type CustomStyle = {
     style?: CSSProperties;
 };
 
-export type ExtendedStyleProps = Record<string, (...arg: any[]) => CustomStyle>;
+export type ExtendedStyleProps = Record<
+    string,
+    // eslint-disable-next-line no-unused-vars
+    (...args: any[]) => CustomStyle
+>;
