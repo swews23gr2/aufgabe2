@@ -1,3 +1,14 @@
+# Benennung von Branches
+
+|Branchname|Verwendung|Beispiel|
+|---|---|---|
+|`feature/<branchname>`|Neue Funktionalität|Login-Seite erstellt|
+|`bugfix/<branchname>`|Fehlerhaftes Verhalten innerhalb der Anwendung|Fehlerhaftes Filtern von Büchern korrigiert|
+|`hotfix/<branchname>`|Anwendungsblockierende Fehler|Fehlschlagen eines Builds korrigiert|
+|`docs/<branchname>`|Dokumentation|`README.md` aktualisiert|
+
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
