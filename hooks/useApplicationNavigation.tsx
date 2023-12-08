@@ -1,3 +1,4 @@
+'use client';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -6,10 +7,7 @@ import {
     faHouse,
     faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-    useApplicationContextApi,
-    tokenExist,
-} from '@/context/ApplicationContextApi';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { useRouter } from 'next/navigation';
 
 type NavigationButton = {
@@ -63,7 +61,9 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
             onClick: () => router.push('/anlegen'),
         },
         {
-            label: `${tokenExist() ? 'Abmelden' : 'Anmelden'}`,
+            label: `${
+                appContext.tokenExistsAndIsValid() ? 'Abmelden' : 'Anmelden'
+            }`,
             icon: (
                 <FontAwesomeIcon
                     icon={faArrowRightToBracket}

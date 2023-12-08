@@ -7,6 +7,7 @@ import { BoostrapJsImport } from '@/components/BoostrapJsImport';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { ApplicationContainerComponent } from '@/components/ApplicationContainerComponent';
+import { ApplicationContextProvider } from '@/context/ApplicationContextApi';
 
 config.autoAddCss = false;
 
@@ -26,9 +27,11 @@ export default function RootLayout(props: PropsRootLayout) {
         <html lang="de">
             <BoostrapJsImport />
             <body className={inter.className}>
-                <ApplicationContainerComponent>
-                    {props.children}
-                </ApplicationContainerComponent>
+                <ApplicationContextProvider>
+                    <ApplicationContainerComponent>
+                        {props.children}
+                    </ApplicationContainerComponent>
+                </ApplicationContextProvider>
             </body>
         </html>
     );

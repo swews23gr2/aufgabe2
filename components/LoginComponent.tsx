@@ -1,4 +1,6 @@
 'use client';
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useEffect, useState } from 'react';
 import { CenteredSectionComponent } from '@/components/shared/CenteredSectionComponent';
 import InputFieldComponent from '@/components/shared/InputFieldComponent';
@@ -6,6 +8,8 @@ import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { LoginDaten } from '@/api/auth';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
+import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
+import { LoadingComponent } from '@/components/shared/LoadingComponent';
 
 export const LoginComponent: React.FC = () => {
     const appContext = useApplicationContextApi();
@@ -18,6 +22,8 @@ export const LoginComponent: React.FC = () => {
     });
 
     const [isInputValid, setIsInputValid] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | undefined>(undefined);
 
     const [termsAndConditionsAccepted, setTermsAndConditionsAccepted] =
         useState<boolean>(false);
@@ -34,8 +40,17 @@ export const LoginComponent: React.FC = () => {
         }));
     };
 
-    const handleLogin = () => {
-        void appContext.login(loginDaten);
+    const handleLogin = async () => {
+        setIsLoading(true);
+        setError(undefined);
+
+        try {
+            await appContext.login(loginDaten);
+        } catch (err) {
+            setError((err as Error).message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const validateInput = () => {
@@ -77,7 +92,7 @@ export const LoginComponent: React.FC = () => {
                             <input
                                 type="checkbox"
                                 id="termsAndConditions"
-                                checked={termsAndConditionsAccepted}
+                                defaultChecked={termsAndConditionsAccepted}
                                 {...styles.checkboxInput()}
                                 onClick={() =>
                                     setTermsAndConditionsAccepted(
@@ -93,13 +108,24 @@ export const LoginComponent: React.FC = () => {
                                 zu
                             </label>
                         </div>
+
+                        {isLoading ? (
+                            <LoadingComponent
+                                message={
+                                    'Sie werden angemeldet. Haben Sie Geduld.'
+                                }
+                            />
+                        ) : null}
+                        {error ? (
+                            <ErrorBannerComponent message={error} />
+                        ) : null}
                     </div>
 
                     <button
                         type="button"
                         {...styles.submitButton()}
                         onClick={handleLogin}
-                        disabled={!isInputValid}
+                        disabled={!isInputValid || isLoading}
                     >
                         Anmelden
                     </button>
