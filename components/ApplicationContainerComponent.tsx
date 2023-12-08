@@ -5,40 +5,33 @@ import { FooterComponent } from '@/components/FooterComponent';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { BottomNavigationComponent } from '@/components/BottomNavigationComponent';
 import { LoginComponent } from '@/components/LoginComponent';
-import {
-    ApplicationContextProvider,
-    tokenExist,
-    initializeRequestInterceptor,
-} from '@/context/ApplicationContextApi';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 
 type Props = PropsWithChildren;
 
 export const ApplicationContainerComponent: React.FC<Props> = (
     props: Props,
 ) => {
-    const [jwtTokenIsValid, setJwtTokenIsValid] = useState<boolean | undefined>(
-        tokenExist(),
+    const appContext = useApplicationContextApi();
+    const [tokenIsValid, setTokenIsValid] = useState<boolean | undefined>(
+        appContext.tokenExistsAndIsValid(),
     );
 
     useEffect(() => {
-        initializeRequestInterceptor(setJwtTokenIsValid);
-    }, []);
+        appContext.initializeRequestInterceptor(setTokenIsValid);
+    }, [appContext]);
 
     return (
-        <ApplicationContextProvider>
-            <div {...styles.appContainer()}>
-                <NavigationBarComponent />
-                {jwtTokenIsValid ? (
-                    <main {...styles.mainContentContainer()}>
-                        {props.children}
-                    </main>
-                ) : (
-                    <LoginComponent />
-                )}
-                <FooterComponent />
-                <BottomNavigationComponent />
-            </div>
-        </ApplicationContextProvider>
+        <div {...styles.appContainer()}>
+            <NavigationBarComponent />
+            {tokenIsValid ? (
+                <main {...styles.mainContentContainer()}>{props.children}</main>
+            ) : (
+                <LoginComponent />
+            )}
+            <FooterComponent />
+            <BottomNavigationComponent />
+        </div>
     );
 };
 
