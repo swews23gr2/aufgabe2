@@ -29,6 +29,17 @@ export const LoginComponent: React.FC = () => {
         useState<boolean>(false);
 
     useEffect(() => {
+        const validateInput = () => {
+            if (
+                loginDaten.username === '' ||
+                loginDaten.password === '' ||
+                !termsAndConditionsAccepted
+            ) {
+                setIsInputValid(false);
+                return;
+            }
+            setIsInputValid(true);
+        };
         validateInput();
     }, [loginDaten, termsAndConditionsAccepted]);
 
@@ -51,18 +62,6 @@ export const LoginComponent: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
-    };
-
-    const validateInput = () => {
-        if (
-            loginDaten.username === '' ||
-            loginDaten.password === '' ||
-            !termsAndConditionsAccepted
-        ) {
-            setIsInputValid(false);
-            return;
-        }
-        setIsInputValid(true);
     };
 
     return (
