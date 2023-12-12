@@ -11,7 +11,7 @@ import { BucherCardViewComponent } from '@/components/BucherCardViewComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
-import { faTable, faExpand } from '@fortawesome/free-solid-svg-icons';
+import { faExpand, faTable } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 
@@ -27,38 +27,45 @@ const BuecherListe: React.FC = () => {
 
     const [viewType, setViewType] = useState<ViewType>('TABLE');
 
-    if (isLoading) return <LoadingComponent />;
-
     if (error) return <ErrorBannerComponent message={error} />;
 
     return (
         <PageContentWrapperComponent title={'Bücher'}>
-            <div>
-                <SearchInputComponent
-                    data={buecher}
-                    inputProps={{ placeholder: 'Nach Büchern suchen' }}
-                    optionRight={
-                        <ViewSwitchComponent
-                            viewType={viewType}
-                            switchView={setViewType}
-                        />
-                    }
-                >
-                    {(buecher) =>
-                        buecher.length > 0 ? (
-                            viewType === 'TABLE' ? (
-                                <BucherTabelleComponent buecher={buecher} />
+            {isLoading ? (
+                <LoadingComponent />
+            ) : (
+                <div>
+                    <SearchInputComponent
+                        data={buecher}
+                        inputProps={{ placeholder: 'Nach Büchern suchen' }}
+                        optionRight={
+                            <ViewSwitchComponent
+                                viewType={viewType}
+                                switchView={setViewType}
+                            />
+                        }
+                    >
+                        {(buecher) =>
+                            buecher.length > 0 ? (
+                                viewType === 'TABLE' ? (
+                                    <BucherTabelleComponent buecher={buecher} />
+                                ) : (
+                                    <BucherCardViewComponent
+                                        buecher={buecher}
+                                    />
+                                )
                             ) : (
-                                <BucherCardViewComponent buecher={buecher} />
+                                <div
+                                    role="alert"
+                                    className="alert alert-warning"
+                                >
+                                    Kein Buch gefunden!
+                                </div>
                             )
-                        ) : (
-                            <div role="alert" className="alert alert-warning">
-                                Kein Buch gefunden!
-                            </div>
-                        )
-                    }
-                </SearchInputComponent>
-            </div>
+                        }
+                    </SearchInputComponent>
+                </div>
+            )}
         </PageContentWrapperComponent>
     );
 };
