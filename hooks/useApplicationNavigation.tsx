@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowRightToBracket,
@@ -8,12 +8,11 @@ import {
     faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type NavigationButton = {
     label: string;
-    // eslint-disable-next-line no-undef
-    icon: JSX.Element;
+    icon: ReactNode;
     isActive: boolean;
     onClick: () => void;
 };
@@ -25,8 +24,9 @@ type ApplicationNavigation = {
 export const useApplicationNavigation = (): ApplicationNavigation => {
     const appContext = useApplicationContextApi();
     const router = useRouter();
+    const pathname = usePathname();
 
-    const INITIAL_BUTTONS: NavigationButton[] = [
+    const buttons: NavigationButton[] = [
         {
             label: 'Startseite',
             icon: (
@@ -35,7 +35,7 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
                     style={{ color: 'black', fontSize: 20 }}
                 />
             ),
-            isActive: true,
+            isActive: pathname === '/',
             onClick: () => router.push('/'),
         },
         {
@@ -46,7 +46,7 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
                     style={{ color: 'black', fontSize: 20 }}
                 />
             ),
-            isActive: false,
+            isActive: pathname === '/buecher',
             onClick: () => router.push('/buecher'),
         },
         {
@@ -57,7 +57,7 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
                     style={{ color: 'black', fontSize: 20 }}
                 />
             ),
-            isActive: false,
+            isActive: pathname === '/anlegen',
             onClick: () => router.push('/anlegen'),
         },
         {
@@ -75,7 +75,12 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
         },
     ];
 
-    const [navigationButtons] = useState<NavigationButton[]>(INITIAL_BUTTONS);
+    const [navigationButtons, setNavigationButtons] =
+        useState<NavigationButton[]>(buttons);
+
+    useEffect(() => {
+        setNavigationButtons(buttons);
+    }, [pathname]);
 
     return {
         navigationButtons,

@@ -1,24 +1,41 @@
 'use client';
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment */
 import React, { createContext, PropsWithChildren, useContext } from 'react';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+    AxiosRequestConfig,
+    AxiosResponse,
+    InternalAxiosRequestConfig,
+} from 'axios';
 import { GraphQlLoginResponse, loginApi, LoginDaten } from '@/api/auth';
 import { GraphQLErrorItem, GraphqlErrorResponse } from '@/api/graphqlError';
+import {
+    Buch,
+    BuchInputModell,
+    BuchResponse,
+    BuchUpdateModell,
+    createBuchApi,
+    deleteBuchApi,
+    getAlleBuecherApi,
+    getBuchByIdApi,
+    updateBuchApi,
+} from '@/api/buch';
 
 type ContextOutput = {
-    login: (
-        // eslint-disable-next-line no-unused-vars
-        loginDaten: LoginDaten,
-    ) => Promise<void>;
+    login: (loginDaten: LoginDaten) => Promise<void>;
     logout: () => void;
     tokenExistsAndIsValid: () => boolean;
     initializeRequestInterceptor: (
-        // eslint-disable-next-line no-unused-vars
         announceTokenValidity: (isTokenValid: boolean) => void,
     ) => void;
+    getBuchById: (id: number) => Promise<Buch>;
+    getAlleBuecher: () => Promise<Buch[]>;
+    createBuch: (buchInputModell: BuchInputModell) => Promise<void>;
+    updateBuch: (buch: BuchUpdateModell) => Promise<void>;
+    deleteBuch: (id: number) => Promise<void>;
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
+// @ts-ignore
 const ApplicationContext = createContext<ContextOutput>({});
 
 export const useApplicationContextApi = () => {
@@ -29,17 +46,23 @@ type Props = PropsWithChildren;
 export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
 
-    const baseConfig: AxiosRequestConfig<string> = {
+    const authenticationToken =
+        typeof localStorage !== 'undefined'
+            ? localStorage.getItem('auth_token')
+            : undefined;
+
+    const baseAxiosRequestConfig: AxiosRequestConfig<string> = {
         method: 'post',
         url: process.env.NEXT_PUBLIC_BACKEND_SERVER_URL as string,
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${authenticationToken}`,
         },
     };
 
     const login = async (loginDaten: LoginDaten) => {
         const loginResponse: AxiosResponse<GraphQlLoginResponse> =
-            await loginApi(loginDaten, baseConfig);
+            await loginApi(loginDaten, baseAxiosRequestConfig);
         handleGraphQLRequestError(loginResponse.data as GraphqlErrorResponse);
         saveToken(loginResponse.data.data.login.token);
         location.reload();
@@ -56,6 +79,56 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
 
     const deleteToken = () => {
         localStorage.removeItem('auth_token');
+    };
+
+    const getBuchById = async (id: number): Promise<Buch> => {
+        const response = await getBuchByIdApi(id, baseAxiosRequestConfig);
+        handleGraphQLRequestError(
+            response.data as unknown as GraphqlErrorResponse,
+        );
+        return convertBuchResponseToBuch(response.data.data.buch);
+    };
+
+    const getAlleBuecher = async (): Promise<Buch[]> => {
+        const response = await getAlleBuecherApi(baseAxiosRequestConfig);
+        handleGraphQLRequestError(
+            response.data as unknown as GraphqlErrorResponse,
+        );
+        return response.data.data.buecher.map((b) =>
+            convertBuchResponseToBuch(b),
+        );
+    };
+
+    const createBuch = async (
+        buchInputModell: BuchInputModell,
+    ): Promise<void> => {
+        const createBuchResponse = await createBuchApi(
+            buchInputModell,
+            baseAxiosRequestConfig,
+        );
+        handleGraphQLRequestError(
+            createBuchResponse.data as unknown as GraphqlErrorResponse,
+        );
+    };
+
+    const updateBuch = async (buch: BuchUpdateModell): Promise<void> => {
+        const updateBuchResponse = await updateBuchApi(
+            buch,
+            baseAxiosRequestConfig,
+        );
+        handleGraphQLRequestError(
+            updateBuchResponse.data as unknown as GraphqlErrorResponse,
+        );
+    };
+
+    const deleteBuch = async (id: number): Promise<void> => {
+        const deleteBuchResponse = await deleteBuchApi(
+            id,
+            baseAxiosRequestConfig,
+        );
+        handleGraphQLRequestError(
+            deleteBuchResponse.data as unknown as GraphqlErrorResponse,
+        );
     };
 
     const handleGraphQLRequestError = (errorResponse: GraphqlErrorResponse) => {
@@ -89,10 +162,9 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     };
 
     const initializeRequestInterceptor = (
-        // eslint-disable-next-line no-unused-vars
         announceTokenValidity: (isTokenValid: boolean) => void,
     ) => {
-        const interceptor = (config: AxiosRequestConfig) => {
+        const requestInterceptor = (config: InternalAxiosRequestConfig) => {
             if (tokenExistsAndIsValid()) {
                 announceTokenValidity(true);
             }
@@ -101,9 +173,8 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
             }
             return config;
         };
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        axios.interceptors.request.use(interceptor);
+
+        axios.interceptors.request.use(requestInterceptor);
     };
 
     return (
@@ -113,9 +184,22 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
                 logout,
                 tokenExistsAndIsValid,
                 initializeRequestInterceptor,
+                getBuchById,
+                getAlleBuecher,
+                createBuch,
+                updateBuch,
+                deleteBuch,
             }}
         >
             {children}
         </ApplicationContext.Provider>
     );
+};
+
+const convertBuchResponseToBuch = (buchResponse: BuchResponse): Buch => {
+    return {
+        ...buchResponse,
+        datum: new Date(buchResponse.datum),
+        titel: buchResponse.titel.titel,
+    };
 };
