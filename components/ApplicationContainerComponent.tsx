@@ -39,7 +39,7 @@ const styles: ExtendedStyleProps = {
     appContainer: () => ({
         style: {
             display: 'grid',
-            gridTemplateRows: 'max-content minmax(80vh, 1fr) max-content',
+            gridTemplateRows: 'max-content minmax(100vh, 1fr) max-content',
         },
     }),
 
