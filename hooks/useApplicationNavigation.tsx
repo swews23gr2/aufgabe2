@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+'use client';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowRightToBracket,
@@ -6,11 +7,12 @@ import {
     faHouse,
     faPlus,
 } from '@fortawesome/free-solid-svg-icons';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
+import { usePathname, useRouter } from 'next/navigation';
 
 type NavigationButton = {
     label: string;
-    // eslint-disable-next-line no-undef
-    icon: JSX.Element;
+    icon: ReactNode;
     isActive: boolean;
     onClick: () => void;
 };
@@ -19,54 +21,66 @@ type ApplicationNavigation = {
     navigationButtons: NavigationButton[];
 };
 
-const INITIAL_BUTTONS: NavigationButton[] = [
-    {
-        label: 'Startseite',
-        icon: (
-            <FontAwesomeIcon
-                icon={faHouse}
-                style={{ color: 'black', fontSize: 20 }}
-            />
-        ),
-        isActive: true,
-        onClick: () => alert('In development'),
-    },
-    {
-        label: 'Bücher',
-        icon: (
-            <FontAwesomeIcon
-                icon={faBook}
-                style={{ color: 'black', fontSize: 20 }}
-            />
-        ),
-        isActive: false,
-        onClick: () => alert('In development'),
-    },
-    {
-        label: 'Anlegen',
-        icon: (
-            <FontAwesomeIcon
-                icon={faPlus}
-                style={{ color: 'black', fontSize: 20 }}
-            />
-        ),
-        isActive: false,
-        onClick: () => alert('In development'),
-    },
-    {
-        label: 'Anmelden',
-        icon: (
-            <FontAwesomeIcon
-                icon={faArrowRightToBracket}
-                style={{ color: 'black', fontSize: 20 }}
-            />
-        ),
-        isActive: false,
-        onClick: () => alert('In development'),
-    },
-];
 export const useApplicationNavigation = (): ApplicationNavigation => {
-    const [navigationButtons] = useState<NavigationButton[]>(INITIAL_BUTTONS);
+    const appContext = useApplicationContextApi();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const buttons: NavigationButton[] = [
+        {
+            label: 'Startseite',
+            icon: (
+                <FontAwesomeIcon
+                    icon={faHouse}
+                    style={{ color: 'black', fontSize: 20 }}
+                />
+            ),
+            isActive: pathname === '/',
+            onClick: () => router.push('/'),
+        },
+        {
+            label: 'Bücher',
+            icon: (
+                <FontAwesomeIcon
+                    icon={faBook}
+                    style={{ color: 'black', fontSize: 20 }}
+                />
+            ),
+            isActive: pathname === '/buecher',
+            onClick: () => router.push('/buecher'),
+        },
+        {
+            label: 'Anlegen',
+            icon: (
+                <FontAwesomeIcon
+                    icon={faPlus}
+                    style={{ color: 'black', fontSize: 20 }}
+                />
+            ),
+            isActive: pathname === '/anlegen',
+            onClick: () => router.push('/anlegen'),
+        },
+        {
+            label: `${
+                appContext.tokenExistsAndIsValid() ? 'Abmelden' : 'Anmelden'
+            }`,
+            icon: (
+                <FontAwesomeIcon
+                    icon={faArrowRightToBracket}
+                    style={{ color: 'black', fontSize: 20 }}
+                />
+            ),
+            isActive: false,
+            onClick: () => appContext.logout(),
+        },
+    ];
+
+    const [navigationButtons, setNavigationButtons] =
+        useState<NavigationButton[]>(buttons);
+
+    useEffect(() => {
+        setNavigationButtons(buttons);
+    }, [pathname]);
 
     return {
         navigationButtons,

@@ -4,9 +4,11 @@ import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import Link from 'next/link';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useApplicationNavigation } from '@/hooks/useApplicationNavigation';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 
 export const NavigationBarComponent: React.FC = () => {
     const { isSmall } = useMediaQuery();
+    const appContext = useApplicationContextApi();
     const { navigationButtons } = useApplicationNavigation();
 
     return (
@@ -15,18 +17,20 @@ export const NavigationBarComponent: React.FC = () => {
                 <Link href="/" {...styles.brand()}>
                     HKA Bücherverwaltung
                 </Link>
-                <div {...styles.navbarButtonContainer()}>
-                    {navigationButtons.map((button) => (
-                        <button
-                            key={button.label}
-                            type="button"
-                            {...styles.navbarButton(button.isActive)}
-                            onClick={button.onClick}
-                        >
-                            {button.label}
-                        </button>
-                    ))}
-                </div>
+                {appContext.tokenExistsAndIsValid() ? (
+                    <div {...styles.navbarButtonContainer()}>
+                        {navigationButtons.map((button) => (
+                            <button
+                                key={button.label}
+                                type="button"
+                                {...styles.navbarButton(button.isActive)}
+                                onClick={button.onClick}
+                            >
+                                {button.label}
+                            </button>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         </nav>
     );
