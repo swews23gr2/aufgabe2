@@ -5,6 +5,7 @@ import React, { useRef } from 'react';
 import Image from 'next/image';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { scrollIntoView } from '@/helper/scrollIntoView';
+import { useRouter } from 'next/navigation';
 
 type HeroSectionButton = {
     label: string;
@@ -18,12 +19,13 @@ type SoftwareFeature = {
 };
 export default function Home() {
     const { isSmall } = useMediaQuery();
+    const router = useRouter();
     const featureSectionRef = useRef<HTMLDivElement | null>(null);
 
     const heroSectionButtons: HeroSectionButton[] = [
         {
             label: 'Zu den Büchern',
-            onClick: () => alert('In development'),
+            onClick: () => router.push('/buecher'),
         },
         {
             label: 'Mehr erfahren',
