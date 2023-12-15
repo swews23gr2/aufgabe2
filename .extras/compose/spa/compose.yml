@@ -1,8 +1,8 @@
 services:
   spa:
-    image: swews23gr2/spa:2023.12.0-distroless
+    image: swews23gr2/spa:2023.12.0-distroless-standalone
     ports:
-      - published: 3000
+      - published: 3001
         target: 3000
     cap_drop: [ALL]
     deploy:

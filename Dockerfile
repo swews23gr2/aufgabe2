@@ -12,8 +12,11 @@ FROM node:${NODE_VERSION}-bookworm AS builder
 WORKDIR /home/node
 
 COPY package.json package-lock.json next.config.mjs tsconfig*.json ./
+COPY api ./api
 COPY app ./app
 COPY components ./components
+COPY config ./config
+COPY context ./context
 COPY helper ./helper
 COPY hooks ./hooks
 COPY theme ./theme
@@ -66,5 +69,6 @@ USER nonroot
 EXPOSE 3000
 
 ENV HOSTNAME "0.0.0.0"
+ENV DOCKER_ENV=true
 
 ENTRYPOINT ["dumb-init", "/nodejs/bin/node", "server.js"]

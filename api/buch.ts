@@ -1,3 +1,4 @@
+import { backendUrl } from '@/config/config';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type BuchArt = 'DRUCKAUSGABE' | 'KINDLE';
@@ -78,7 +79,7 @@ export const getAlleBuecherApi = async (
   }
 }`,
     });
-    const requestConfig = { ...baseRequestConfig, data: body };
+    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
     return await axios.request(requestConfig);
 };
 
@@ -107,7 +108,7 @@ export const getBuchByIdApi = async (
 }`,
         variables: { id },
     });
-    const requestConfig = { ...baseRequestConfig, data: body };
+    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
     return await axios.request(requestConfig);
 };
 
@@ -146,7 +147,7 @@ export const createBuchApi = async (
   }
 }`,
     });
-    const requestConfig = { ...baseRequestConfig, data: body };
+    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
     return await axios.request(requestConfig);
 };
 
@@ -177,7 +178,7 @@ export const updateBuchApi = async (
   }
 }`,
     });
-    const requestConfig = { ...baseRequestConfig, data: body };
+    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
     return await axios.request(requestConfig);
 };
 
@@ -190,7 +191,7 @@ export const deleteBuchApi = async (
         delete(id: "${id}")
         }`,
     });
-    const requestConfig = { ...baseRequestConfig, data: body };
+    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
     return await axios.request(requestConfig);
 };
 
