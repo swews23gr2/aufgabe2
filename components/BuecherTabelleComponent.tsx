@@ -15,7 +15,11 @@ export const BuecherTabelleComponent: React.FC<Props> = (props: Props) => {
     const schlagwoerterExist = (
         schlagwoerter: string[] | undefined | null,
     ): boolean => {
-        return schlagwoerter !== undefined || schlagwoerter!.length > 0;
+        return (
+            schlagwoerter !== null &&
+            schlagwoerter !== undefined &&
+            schlagwoerter.length > 0
+        );
     };
 
     return (
