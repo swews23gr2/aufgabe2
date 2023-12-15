@@ -38,9 +38,13 @@ const SearchInputComponent: React.FC<Props<any>> = <T extends object>(
             const queryToLowercase = queryString.toLowerCase();
 
             return kunden.filter((item) => {
-                return Object.values(item).some((value: string) =>
-                    value.toString().toLowerCase().includes(queryToLowercase),
-                );
+                return Object.values(item).some((value: string) => {
+                    if (!value) return false;
+                    return value
+                        .toString()
+                        .toLowerCase()
+                        .includes(queryToLowercase);
+                });
             });
         };
 

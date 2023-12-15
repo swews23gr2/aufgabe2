@@ -6,7 +6,7 @@ import PageContentWrapperComponent from '@/components/shared/PageContentWrapperC
 import SearchInputComponent from '@/components/SearchInputComponent';
 import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
-import { BucherTabelleComponent } from '@/components/BucherTabelleComponent';
+import { BuecherTabelleComponent } from '@/components/BuecherTabelleComponent';
 import { BucherCardViewComponent } from '@/components/BucherCardViewComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
@@ -48,7 +48,9 @@ const BuecherListe: React.FC = () => {
                         {(buecher) =>
                             buecher.length > 0 ? (
                                 viewType === 'TABLE' ? (
-                                    <BucherTabelleComponent buecher={buecher} />
+                                    <BuecherTabelleComponent
+                                        buecher={buecher}
+                                    />
                                 ) : (
                                     <BucherCardViewComponent
                                         buecher={buecher}

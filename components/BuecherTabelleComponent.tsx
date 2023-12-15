@@ -8,9 +8,15 @@ type Props = {
     buecher: Buch[];
 };
 
-export const BucherTabelleComponent: React.FC<Props> = (props: Props) => {
+export const BuecherTabelleComponent: React.FC<Props> = (props: Props) => {
     const { buecher } = props;
     const router = useRouter();
+
+    const schlagwoerterExist = (
+        schlagwoerter: string[] | undefined | null,
+    ): boolean => {
+        return schlagwoerter !== undefined || schlagwoerter!.length > 0;
+    };
 
     return (
         <table {...styles.tableContainer()}>
@@ -37,11 +43,18 @@ export const BucherTabelleComponent: React.FC<Props> = (props: Props) => {
                         <td>{`${buch.preis} €`}</td>
                         <td style={{ maxWidth: '200px' }}>
                             <div {...styles.keyWordListContainer()}>
-                                {buch.schlagwoerter.map((word) => (
-                                    <div key={word} {...styles.keyWordItem()}>
-                                        {word.toLowerCase()}
-                                    </div>
-                                ))}
+                                {schlagwoerterExist(buch.schlagwoerter) ? (
+                                    buch.schlagwoerter.map((word) => (
+                                        <div
+                                            key={word}
+                                            {...styles.keyWordItem()}
+                                        >
+                                            {word.toLowerCase()}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div>Kein Schlagwort vorhanden!</div>
+                                )}
                             </div>
                         </td>
                     </tr>

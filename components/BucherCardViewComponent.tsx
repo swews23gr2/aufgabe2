@@ -3,8 +3,7 @@ import React from 'react';
 import { Buch } from '@/api/buch';
 import { useRouter } from 'next/navigation';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { RatingComponent } from '@/components/shared/RatingComponent';
 
 type Props = {
     buecher: Buch[];
@@ -30,35 +29,6 @@ export const BucherCardViewComponent: React.FC<Props> = (props: Props) => {
                     </div>
                     <div {...styles.price()}>{`${buch.preis} €`}</div>
                 </div>
-            ))}
-        </div>
-    );
-};
-
-type PropsRating = {
-    stars: number;
-    maxValue: number;
-};
-const RatingComponent: React.FC<PropsRating> = (props: PropsRating) => {
-    const { stars, maxValue } = props;
-    return (
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${maxValue}, 1fr)`,
-            }}
-        >
-            {Array.from(Array(maxValue).keys()).map((v, index) => (
-                <FontAwesomeIcon
-                    key={v}
-                    icon={faStar}
-                    style={{
-                        color:
-                            index <= stars
-                                ? 'var(--color-warn)'
-                                : 'var(--color-darkgray-200)',
-                    }}
-                />
             ))}
         </div>
     );
