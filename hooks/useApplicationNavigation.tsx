@@ -46,7 +46,7 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
                     style={{ color: 'black', fontSize: 20 }}
                 />
             ),
-            isActive: pathname === '/buecher',
+            isActive: pathname.includes('/buecher'),
             onClick: () => router.push('/buecher'),
         },
         {
@@ -57,7 +57,7 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
                     style={{ color: 'black', fontSize: 20 }}
                 />
             ),
-            isActive: pathname === '/anlegen',
+            isActive: pathname.includes('/anlegen'),
             onClick: () => router.push('/anlegen'),
         },
         {
