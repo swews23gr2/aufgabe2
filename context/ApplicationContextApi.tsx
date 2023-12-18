@@ -135,7 +135,7 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         const errors: GraphQLErrorItem[] | undefined = errorResponse.errors;
         if (errors === undefined) return;
         const errorMessage: string = errors[0].message;
-        if (!errorMessage) {
+        if (errorMessage === undefined) {
             const extensionErrorMessage = errors[0].extensions?.stacktrace[0];
             console.error(extensionErrorMessage);
             throw new Error(extensionErrorMessage);
