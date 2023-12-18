@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --cache --write \"**/*.+(js|jsx|ts|tsx)\""
+    "prettier": "prettier --cache --write --check \"**/*.+(js|jsx|ts|tsx)\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -22,6 +22,7 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "7.49.2",
     "sass": "^1.69.5"
   },
   "devDependencies": {
