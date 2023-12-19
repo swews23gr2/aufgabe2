@@ -15,6 +15,7 @@ import axios, {
 } from 'axios';
 import { GraphQlLoginResponse, loginApi, LoginDaten } from '@/api/auth';
 import { GraphQLErrorItem, GraphqlErrorResponse } from '@/api/graphqlError';
+
 import {
     Buch,
     BuchInputModell,
@@ -102,10 +103,12 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     };
 
     const getAlleBuecher = async (): Promise<Buch[]> => {
+        console.log('suche Buecher');
         const response = await getAlleBuecherApi(baseAxiosRequestConfig);
         handleGraphQLRequestError(
             response.data as unknown as GraphqlErrorResponse,
         );
+        console.log(response.data.data.buecher);
         return response.data.data.buecher.map((b) =>
             convertBuchResponseToBuch(b),
         );
