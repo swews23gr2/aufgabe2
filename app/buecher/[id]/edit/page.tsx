@@ -8,7 +8,7 @@
 /* eslint-disable no-useless-escape */
 'use client';
 import { useForm } from 'react-hook-form';
-import { BuchInputModell, Buch } from '@/api/buch';
+import { BuchUpdateModell, Buch } from '@/api/buch';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useEffect, useState } from 'react';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
@@ -22,7 +22,7 @@ import { LoadingComponent } from '@/components/shared/LoadingComponent';
 export default function Create() {
     const appContext = useApplicationContextApi();
     const { register, handleSubmit, formState, reset, setValue } =
-        useForm<BuchInputModell>({ mode: 'onBlur' });
+        useForm<BuchUpdateModell>({ mode: 'onBlur' });
     const { id } = useParams<{ id: string }>();
     const { errors } = formState;
     const [response, setResponse] = useState<string>();
@@ -36,24 +36,43 @@ export default function Create() {
         error,
     } = useFetch<Buch>(appContext.getBuchById(Number(id)));
     console.log(buch);
+    console.log(buch?.version);
 
     const toRabatt = (rabatt: string): number => {
         const clear = rabatt.replace('%', '');
         return Number(clear);
     };
 
+    const DateToString = (date: Date): string => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // JavaScript zählt Monate von 0 bis 11
+        const year = date.getFullYear();
+
+        return `${day}.${month}.${year}`;
+    };
+
+    const BooleanToString = (lieferbar: boolean): string => {
+        if (lieferbar) {
+            return 'true';
+        } else {
+            return 'false';
+        }
+    };
+
     useEffect(() => {
         setValue('schlagwoerter', buch?.schlagwoerter);
         setValue('art', buch?.art);
-        setValue('lieferbar', buch?.lieferbar);
+        setValue('lieferbar', BooleanToString(buch?.lieferbar));
     }, [setValue, buch]);
 
-    const onSubmit = async (data: BuchInputModell) => {
+    const onSubmit = async (data: BuchUpdateModell) => {
         console.log('Form submitted', data);
         setResponse(undefined);
         setErrorCreate(undefined);
+        data.id = buch?.id.toString();
+        data.version = buch?.version;
         try {
-            const response = await appContext.createBuch(data);
+            const response = await appContext.updateBuch(data);
             console.log(response);
             setResponse(data.titel.titel);
             reset();
@@ -69,10 +88,10 @@ export default function Create() {
 
     return (
         <div className="container">
-            <h1 {...styles.title()}>Buch anlegen</h1>
+            <h1 {...styles.title()}>Buch ändern</h1>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
-                    htmlForLabel="isbn"
+                    htmlforlabel="isbn"
                     label="ISBN"
                     error={errors.isbn?.message}
                     className="form-control"
@@ -92,7 +111,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="titel"
+                    htmlforlabel="titel"
                     label="Titel"
                     error={errors.titel?.titel?.message}
                     className="form-control"
@@ -108,7 +127,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="untertitel"
+                    htmlforlabel="untertitel"
                     label="Untertitel"
                     error={errors.untertitel?.message}
                     className="form-control"
@@ -119,7 +138,7 @@ export default function Create() {
                     rest={register('untertitel')}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="preis"
+                    htmlforlabel="preis"
                     label="Preis"
                     error={errors.preis?.message}
                     className="form-control"
@@ -144,7 +163,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rating"
+                    htmlforlabel="rating"
                     label="Rating"
                     error={errors.rating?.message}
                     className="form-control"
@@ -164,7 +183,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rabatt"
+                    htmlforlabel="rabatt"
                     label="Rabatt %"
                     error={errors.rabatt?.message}
                     className="form-control"
@@ -181,18 +200,27 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="erscheinungsdatum"
+                    htmlforlabel="erscheinungsdatum"
                     label="Erscheinungsdatum"
                     error={errors.datum?.message}
                     className="form-control"
-                    type="date"
+                    type="text"
                     id="erscheinungsdatum"
                     placeholder="Erscheinungsdatum"
-                    defaultValue={buch?.datum}
-                    rest={register('datum')}
+                    defaultValue={DateToString(buch?.datum)}
+                    rest={register('datum', {
+                        required: {
+                            value: true,
+                            message: 'Erscheinungsdatum ist erforderlich!',
+                        },
+                        pattern: {
+                            value: /^[0-3]?[0-9][/.][0-3]?[0-9][/.](?:[0-9]{2})?[0-9]{2}$/,
+                            message: 'Datum ist ungültig!',
+                        },
+                    })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="homepage"
+                    htmlforlabel="homepage"
                     label="Homepage"
                     error={errors.homepage?.message}
                     className="form-control"

@@ -49,7 +49,7 @@ export default function Create() {
             <h1 {...styles.title()}>Buch anlegen</h1>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
-                    htmlForLabel="isbn"
+                    htmlforlabel="isbn"
                     label="ISBN"
                     error={errors.isbn?.message}
                     className="form-control"
@@ -68,7 +68,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="titel"
+                    htmlforlabel="titel"
                     label="Titel"
                     error={errors.titel?.titel?.message}
                     className="form-control"
@@ -83,7 +83,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="untertitel"
+                    htmlforlabel="untertitel"
                     label="Untertitel"
                     error={errors.untertitel?.message}
                     className="form-control"
@@ -93,7 +93,7 @@ export default function Create() {
                     rest={register('untertitel')}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="preis"
+                    htmlforlabel="preis"
                     label="Preis"
                     error={errors.preis?.message}
                     className="form-control"
@@ -117,7 +117,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rating"
+                    htmlforlabel="rating"
                     label="Rating"
                     error={errors.rating?.message}
                     className="form-control"
@@ -140,7 +140,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rabatt"
+                    htmlforlabel="rabatt"
                     label="Rabatt %"
                     error={errors.rabatt?.message}
                     className="form-control"
@@ -156,7 +156,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="erscheinungsdatum"
+                    htmlforlabel="erscheinungsdatum"
                     label="Erscheinungsdatum"
                     error={errors.datum?.message}
                     className="form-control"
@@ -172,7 +172,7 @@ export default function Create() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="homepage"
+                    htmlforlabel="homepage"
                     label="Homepage"
                     error={errors.homepage?.message}
                     className="form-control"

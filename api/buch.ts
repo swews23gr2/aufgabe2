@@ -29,11 +29,23 @@ export type BuchInputModell = Omit<BuchResponse, 'id' | 'version' | 'datum'> & {
     datum: Date;
 };
 
-export type BuchUpdateModell = Omit<
-    BuchResponse,
-    'titel' | 'datum' | 'untertitel'
-> & {
+export type BuchUpdateModell = Omit<BuchResponse, 'lieferbar' | 'id'> & {
     datum: Date;
+    lieferbar: string;
+    id: string;
+};
+
+const lieferbarToBoolean = (lieferbar: string): boolean => {
+    if (lieferbar === 'true') {
+        return true;
+    }
+    return false;
+};
+
+const stringToDate = (datum: string): Date => {
+    const [day, month, year] = datum.split('.');
+    const formattedDate = `${year}-${month}-${day}`;
+    return new Date(formattedDate);
 };
 
 export type BuchListResponse = {
@@ -90,6 +102,7 @@ export const getBuchByIdApi = async (
         query: `query($id: ID!) {
   buch(id: $id) {
     id
+    version
     isbn
     rating
     art
@@ -156,7 +169,7 @@ export const createBuchApi = async (
 export const updateBuchApi = async (
     buchUpdateModell: BuchUpdateModell,
     baseRequestConfig: AxiosRequestConfig<string>,
-): Promise<AxiosResponse<UpdateBuchResponse>> => {
+): Promise<AxiosResponse> => {
     const body = JSON.stringify({
         query: `mutation {
   update(
@@ -167,9 +180,9 @@ export const updateBuchApi = async (
       rating: ${buchUpdateModell.rating},
       art: ${buchUpdateModell.art},
       preis: ${buchUpdateModell.preis},
-      rabatt: ${buchUpdateModell.rabatt},
-      lieferbar: ${buchUpdateModell.lieferbar},
-      datum: "${buchUpdateModell.datum.toISOString()}",
+      rabatt: ${buchUpdateModell ? Number(buchUpdateModell.rabatt) / 100 : 0},
+      lieferbar: ${lieferbarToBoolean(buchUpdateModell.lieferbar)},
+      datum: "${stringToDate(buchUpdateModell.datum).toISOString()}",
       homepage: "${buchUpdateModell.homepage}",
       schlagwoerter: [${formatKeywordsForRequest(
           buchUpdateModell.schlagwoerter,
