@@ -99,7 +99,9 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         handleGraphQLRequestError(
             response.data as unknown as GraphqlErrorResponse,
         );
-        return convertBuchResponseToBuch(response.data.data.buch);
+        const res = convertBuchResponseToBuch(response.data.data.buch);
+        console.log(res);
+        return res;
     };
 
     const getAlleBuecher = async (): Promise<Buch[]> => {

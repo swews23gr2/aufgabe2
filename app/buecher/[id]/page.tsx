@@ -4,7 +4,6 @@
 import React from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
 import { useParams, useRouter } from 'next/navigation';
-import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
@@ -19,18 +18,24 @@ import {
     BuchDetailsComponent,
     ListEntry,
 } from '@/components/BuchDetailsComponent';
+import useSWR, { Fetcher } from 'swr';
 
 const BuchItem: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
     const { isSmall } = useMediaQuery();
 
+    const fetcher: Fetcher<Buch, string> = async (id: string) => {
+        return await appContext.getBuchById(Number(id));
+    };
+
     const appContext = useApplicationContextApi();
+
     const {
         data: buch,
         isLoading,
         error,
-    } = useFetch<Buch>(appContext.getBuchById(Number(id)));
+    } = useSWR<Buch, string>(`${id}`, fetcher);
 
     const handleDelete = async () => {
         await appContext.deleteBuch(Number(id));
@@ -65,38 +70,43 @@ const BuchItem: React.FC = () => {
 
     if (error !== undefined) return <ErrorBannerComponent message={error} />;
 
-    return (
-        <PageContentWrapperComponent title={`Buchdetails - ${buch.titel}`}>
-            <div {...styles.pageContainer(isSmall)}>
-                <div {...styles.bookPictureAndIconContainer()}>
-                    <div {...styles.bookPicture()}></div>
-                    <div {...styles.buttonsContainer()}>
-                        <button
-                            type="button"
-                            {...styles.editButton()}
-                            onClick={() => router.push(`/buecher/${id}/edit`)}
-                        >
-                            Bearbeiten
-                        </button>
-                        <button
-                            type="button"
-                            {...styles.deleteButton()}
-                            onClick={handleDelete}
-                        >
-                            Buch löschen
-                        </button>
+    if (buch !== undefined)
+        return (
+            <PageContentWrapperComponent title={`Buchdetails - ${buch.titel}`}>
+                <div {...styles.pageContainer(isSmall)}>
+                    <div {...styles.bookPictureAndIconContainer()}>
+                        <div {...styles.bookPicture()}></div>
+                        <div {...styles.buttonsContainer()}>
+                            <button
+                                type="button"
+                                {...styles.editButton()}
+                                onClick={() =>
+                                    router.push(`/buecher/${id}/edit`)
+                                }
+                            >
+                                Bearbeiten
+                            </button>
+                            <button
+                                type="button"
+                                {...styles.deleteButton()}
+                                onClick={handleDelete}
+                            >
+                                Buch löschen
+                            </button>
+                        </div>
                     </div>
+                    <BuchDetailsComponent entries={buchDetails} />
                 </div>
-                <BuchDetailsComponent entries={buchDetails} />
-            </div>
-            <CenteredSectionComponent>
-                <div {...styles.secondSectionTitle()}>Vergleichbare Bücher</div>
-                <GenericEntityListFilerComponent
-                    searchCriteria={{ art: buch.art }}
-                />
-            </CenteredSectionComponent>
-        </PageContentWrapperComponent>
-    );
+                <CenteredSectionComponent>
+                    <div {...styles.secondSectionTitle()}>
+                        Vergleichbare Bücher
+                    </div>
+                    <GenericEntityListFilerComponent
+                        searchCriteria={{ art: buch.art }}
+                    />
+                </CenteredSectionComponent>
+            </PageContentWrapperComponent>
+        );
 };
 
 const styles: ExtendedStyleProps = {

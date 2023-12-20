@@ -3,13 +3,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { Buch } from '@/api/buch';
-import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { useFetch } from '@/hooks/useFetch';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ChipListComponent } from '@/components/shared/ChipListComponent';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
+import useSWR from 'swr';
 
 type PropsGenericEntityListFiler<T> = {
     searchCriteria: {
@@ -20,13 +20,15 @@ export const GenericEntityListFilerComponent: React.FC<
     PropsGenericEntityListFiler<Buch>
 > = (props: PropsGenericEntityListFiler<Buch>) => {
     const { searchCriteria } = props;
-    const appContext = useApplicationContextApi();
     const [filteredBooks, setFilteredBooks] = useState<Buch[]>([]);
+    const appContext = useApplicationContextApi();
     const {
         data: buecher,
-        isLoading,
         error,
-    } = useFetch<Buch[]>(appContext.getAlleBuecher());
+        isLoading,
+    } = useSWR<Buch[], string>('graphql', appContext.getAlleBuecher, {
+        revalidateIfStale: false,
+    });
 
     useEffect(() => {
         const filterBooks = (): Buch[] => {

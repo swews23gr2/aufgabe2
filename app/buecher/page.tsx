@@ -4,28 +4,19 @@
 import React, { useState } from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
 import SearchInputComponent from '@/components/SearchInputComponent';
-import { Buch } from '@/api/buch';
 import { BuecherTabelleComponent } from '@/components/BuecherTabelleComponent';
 import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent';
-import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { faExpand, faTable } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
-import useSWR from 'swr';
+import { useBuecher } from '@/hooks/useBuecher';
 
 type ViewType = 'TABLE' | 'CARDS';
 
 const BuecherListe: React.FC = () => {
-    const appContext = useApplicationContextApi();
-
-    const {
-        data: buecher,
-        isLoading,
-        error,
-    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher);
-
+    const { data: buecher, isLoading, error } = useBuecher();
     const [viewType, setViewType] = useState<ViewType>('TABLE');
 
     if (error) return <ErrorBannerComponent message={error} />;
