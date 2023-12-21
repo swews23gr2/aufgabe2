@@ -38,6 +38,8 @@ export const GenericEntityListFilerComponent: React.FC<
                           entries.find((e) => {
                               return (
                                   e[0] === a[0] &&
+                                  e[1] &&
+                                  a[1] !== undefined &&
                                   e[1]
                                       .toString()
                                       .toLowerCase()
