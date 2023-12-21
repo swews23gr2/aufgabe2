@@ -29,10 +29,14 @@ export type BuchInputModell = Omit<BuchResponse, 'id' | 'version' | 'datum'> & {
     datum: Date;
 };
 
-export type BuchUpdateModell = Omit<BuchResponse, 'lieferbar' | 'id'> & {
+export type BuchUpdateModell = Omit<
+    BuchResponse,
+    'lieferbar' | 'id' | 'rabatt'
+> & {
     datum: Date;
     lieferbar: string;
     id: string;
+    rabatt: number;
 };
 
 const lieferbarToBoolean = (lieferbar: string): boolean => {

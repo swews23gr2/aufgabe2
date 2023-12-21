@@ -25,11 +25,11 @@ const BuchItem: React.FC = () => {
     const router = useRouter();
     const { isSmall } = useMediaQuery();
 
+    const appContext = useApplicationContextApi();
+
     const fetcher: Fetcher<Buch, string> = async (id: string) => {
         return await appContext.getBuchById(Number(id));
     };
-
-    const appContext = useApplicationContextApi();
 
     const {
         data: buch,

@@ -10,17 +10,16 @@
 import { useForm } from 'react-hook-form';
 import { BuchUpdateModell, Buch } from '@/api/buch';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useEffect, useState } from 'react';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { useParams, useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
-import { useFetch } from '@/hooks/useBuecher';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
-export default function Create() {
-    const appContext = useApplicationContextApi();
+export default function Update() {
     const { register, handleSubmit, formState, reset, setValue } =
         useForm<BuchUpdateModell>({ mode: 'onBlur' });
     const { id } = useParams<{ id: string }>();
@@ -30,20 +29,27 @@ export default function Create() {
         undefined,
     );
     const router = useRouter();
+    const appContext = useApplicationContextApi();
+
     const {
         data: buch,
         isLoading,
         error,
-    } = useFetch<Buch>(appContext.getBuchById(Number(id)));
+    } = useSWR<Buch, string>(`${id}`, appContext.getBuchById, {
+        revalidateIfStale: false,
+    });
+
     console.log(buch);
     console.log(buch?.version);
 
-    const toRabatt = (rabatt: string): number => {
+    const toRabatt = (rabatt: string | undefined): number => {
+        if (rabatt === undefined) return 0;
         const clear = rabatt.replace('%', '');
         return Number(clear);
     };
 
-    const DateToString = (date: Date): string => {
+    const DateToString = (date: Date | undefined): string => {
+        if (date === undefined) return '';
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0'); // JavaScript zählt Monate von 0 bis 11
         const year = date.getFullYear();
@@ -60,17 +66,28 @@ export default function Create() {
     };
 
     useEffect(() => {
-        setValue('schlagwoerter', buch?.schlagwoerter);
-        setValue('art', buch?.art);
-        setValue('lieferbar', BooleanToString(buch?.lieferbar));
-    }, [setValue, buch]);
+        if (buch !== undefined) {
+            setValue('schlagwoerter', buch?.schlagwoerter);
+            setValue('art', buch?.art);
+            setValue('lieferbar', BooleanToString(buch?.lieferbar));
+            setValue('titel.titel', buch?.titel);
+            setValue('isbn', buch?.isbn);
+            setValue('untertitel', buch?.untertitel);
+            setValue('preis', buch?.preis);
+            setValue('rating', buch?.rating);
+            setValue('rabatt', toRabatt(buch?.rabatt));
+            setValue('homepage', buch?.homepage);
+        }
+    }, [buch, setValue]);
 
     const onSubmit = async (data: BuchUpdateModell) => {
         console.log('Form submitted', data);
         setResponse(undefined);
         setErrorCreate(undefined);
-        data.id = buch?.id.toString();
-        data.version = buch?.version;
+        if (buch !== undefined) {
+            data.id = buch?.id.toString();
+            data.version = buch?.version;
+        }
         try {
             const response = await appContext.updateBuch(data);
             console.log(response);
@@ -86,6 +103,8 @@ export default function Create() {
     if (isLoading)
         return <LoadingComponent message={'Buchdaten werden geladen'} />;
 
+    if (error !== undefined) return <ErrorBannerComponent message={error} />;
+
     return (
         <div className="container">
             <h1 {...styles.title()}>Buch ändern</h1>
@@ -98,7 +117,6 @@ export default function Create() {
                     type="text"
                     id="isbn"
                     placeholder="ISBN"
-                    defaultValue={buch?.isbn}
                     rest={register('isbn', {
                         required: {
                             value: true,
@@ -118,7 +136,6 @@ export default function Create() {
                     type="text"
                     id="titel"
                     placeholder="Titel"
-                    defaultValue={buch?.titel}
                     rest={register('titel.titel', {
                         required: {
                             value: true,
@@ -134,7 +151,6 @@ export default function Create() {
                     type="text"
                     id="untertitel"
                     placeholder="Untertitel"
-                    defaultValue={buch?.untertitel}
                     rest={register('untertitel')}
                 />
                 <InputFieldValidationComponent
@@ -145,7 +161,6 @@ export default function Create() {
                     type="number"
                     id="preis"
                     placeholder="Preis"
-                    defaultValue={buch?.preis}
                     rest={register('preis', {
                         required: {
                             value: true,
@@ -170,7 +185,6 @@ export default function Create() {
                     type="number"
                     id="rating"
                     placeholder="Rating"
-                    defaultValue={buch?.rating}
                     rest={register('rating', {
                         min: {
                             value: 1,
@@ -190,7 +204,6 @@ export default function Create() {
                     type="number"
                     id="rabatt"
                     placeholder="Rabatt %"
-                    defaultValue={toRabatt(buch?.rabatt)}
                     rest={register('rabatt', {
                         pattern: {
                             value: /^100$|^100.00$|^\d{0,2}(\.\d{1,2})? *%?$/,
@@ -227,7 +240,6 @@ export default function Create() {
                     type="text"
                     id="homepage"
                     placeholder="Homepage"
-                    defaultValue={buch?.homepage}
                     rest={register('homepage', {
                         pattern: {
                             value: /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/,
@@ -318,11 +330,11 @@ export default function Create() {
                     </label>
                 </div>
                 <button type="submit" {...styles.submitButton()}>
-                    Buch anlegen
+                    Buch ändern
                 </button>
                 {response ? (
                     <div className="alert alert-success" role="alert">
-                        Buch: {response} wurde erfolgreich angelegt!
+                        Buch: {response} wurde erfolgreich geändert!
                     </div>
                 ) : null}
                 {errorCreate ? (
