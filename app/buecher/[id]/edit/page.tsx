@@ -17,7 +17,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
+import { cache } from 'swr/_internal';
 
 export default function Update() {
     const { register, handleSubmit, formState, reset, setValue } =
@@ -32,15 +33,16 @@ export default function Update() {
     const appContext = useApplicationContextApi();
 
     const {
-        data: buch,
-        isLoading,
+        data: buecher,
         error,
-    } = useSWR<Buch, string>(`${id}`, appContext.getBuchById, {
-        revalidateIfStale: false,
+        isLoading,
+    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher, {
+        revalidateOnMount: false,
     });
 
-    console.log(buch);
-    console.log(buch?.version);
+    const buch = buecher?.find((buch) => buch.id === Number(id));
+
+    const { mutate } = useSWRConfig();
 
     const toRabatt = (rabatt: string | undefined): number => {
         if (rabatt === undefined) return 0;
@@ -51,7 +53,7 @@ export default function Update() {
     const DateToString = (date: Date | undefined): string => {
         if (date === undefined) return '';
         const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // JavaScript zählt Monate von 0 bis 11
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
 
         return `${day}.${month}.${year}`;
@@ -67,33 +69,33 @@ export default function Update() {
 
     useEffect(() => {
         if (buch !== undefined) {
-            setValue('schlagwoerter', buch?.schlagwoerter);
-            setValue('art', buch?.art);
-            setValue('lieferbar', BooleanToString(buch?.lieferbar));
-            setValue('titel.titel', buch?.titel);
-            setValue('isbn', buch?.isbn);
-            setValue('untertitel', buch?.untertitel);
-            setValue('preis', buch?.preis);
-            setValue('rating', buch?.rating);
-            setValue('rabatt', toRabatt(buch?.rabatt));
-            setValue('homepage', buch?.homepage);
+            setValue('schlagwoerter', buch.schlagwoerter);
+            setValue('art', buch.art);
+            setValue('lieferbar', BooleanToString(buch.lieferbar));
+            setValue('isbn', buch.isbn);
+            setValue('preis', buch.preis);
+            setValue('rating', buch.rating);
+            setValue('rabatt', toRabatt(buch.rabatt));
+            setValue('homepage', buch.homepage);
         }
     }, [buch, setValue]);
 
     const onSubmit = async (data: BuchUpdateModell) => {
-        console.log('Form submitted', data);
         setResponse(undefined);
         setErrorCreate(undefined);
         if (buch !== undefined) {
             data.id = buch?.id.toString();
             data.version = buch?.version;
         }
+        console.log('Form submitted', data);
         try {
             const response = await appContext.updateBuch(data);
             console.log(response);
-            setResponse(data.titel.titel);
+            setResponse(buch?.titel);
+            await mutate('getAlleBuecher');
+            console.log('CacheKomp3: ', cache);
             reset();
-            router.push('/buecher');
+            router.push(`/buecher/${id}`);
         } catch (err) {
             console.log(err);
             setErrorCreate((err as Error).message);
@@ -107,7 +109,13 @@ export default function Update() {
 
     return (
         <div className="container">
-            <h1 {...styles.title()}>Buch ändern</h1>
+            <h1 {...styles.title()}>Buch: {buch?.titel} ändern</h1>
+            <span
+                className="badge rounded-pill text-bg-warning"
+                {...styles.info()}
+            >
+                Titel und Untertitel können nicht geändert werden!
+            </span>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
                     htmlforlabel="isbn"
@@ -127,31 +135,6 @@ export default function Update() {
                             message: 'ISBN ist ungültig!',
                         },
                     })}
-                />
-                <InputFieldValidationComponent
-                    htmlforlabel="titel"
-                    label="Titel"
-                    error={errors.titel?.titel?.message}
-                    className="form-control"
-                    type="text"
-                    id="titel"
-                    placeholder="Titel"
-                    rest={register('titel.titel', {
-                        required: {
-                            value: true,
-                            message: 'Titel ist erforderlich!',
-                        },
-                    })}
-                />
-                <InputFieldValidationComponent
-                    htmlforlabel="untertitel"
-                    label="Untertitel"
-                    error={errors.untertitel?.message}
-                    className="form-control"
-                    type="text"
-                    id="untertitel"
-                    placeholder="Untertitel"
-                    rest={register('untertitel')}
                 />
                 <InputFieldValidationComponent
                     htmlforlabel="preis"
@@ -193,6 +176,10 @@ export default function Update() {
                         max: {
                             value: 5,
                             message: 'Rating muss zwischen 1-5 sein!',
+                        },
+                        required: {
+                            value: true,
+                            message: 'Rating ist erforderlich!',
                         },
                     })}
                 />
@@ -362,7 +349,7 @@ const styles: ExtendedStyleProps = {
             fontSize: 'var(--font-extra-large-size)',
             fontWeight: '600',
             justifySelf: 'center',
-            marginBottom: 'var(--gap-2)',
+            marginBottom: 'var(--gap-0)',
             marginTop: 'var(--gap-4)',
         },
     }),
@@ -373,6 +360,12 @@ const styles: ExtendedStyleProps = {
             justifySelf: 'center',
             marginBottom: 'var(--gap-1)',
             marginTop: 'var(--gap-2)',
+        },
+    }),
+    info: () => ({
+        style: {
+            marginBottom: 'var(--gap-2)',
+            marginTop: 'var(--gap-0)',
         },
     }),
 };

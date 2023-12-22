@@ -26,7 +26,9 @@ export const GenericEntityListFilerComponent: React.FC<
         data: buecher,
         error,
         isLoading,
-    } = useSWR<Buch[], string>('graphql', appContext.getAlleBuecher);
+    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher, {
+        revalidateOnMount: false,
+    });
 
     useEffect(() => {
         const filterBooks = (): Buch[] => {

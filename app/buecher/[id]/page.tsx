@@ -18,7 +18,8 @@ import {
     BuchDetailsComponent,
     ListEntry,
 } from '@/components/BuchDetailsComponent';
-import useSWR, { Fetcher } from 'swr';
+import { cache } from 'swr/_internal';
+import useSWR from 'swr';
 
 const BuchItem: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -27,15 +28,17 @@ const BuchItem: React.FC = () => {
 
     const appContext = useApplicationContextApi();
 
-    const fetcher: Fetcher<Buch, string> = async (id: string) => {
-        return await appContext.getBuchById(Number(id));
-    };
-
     const {
-        data: buch,
-        isLoading,
+        data: buecher,
         error,
-    } = useSWR<Buch, string>(`${id}`, fetcher);
+        isLoading,
+    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher, {
+        revalidateOnMount: false,
+    });
+
+    console.log('Cache Komp2: ', cache);
+
+    const buch = buecher?.find((buch) => buch.id === Number(id));
 
     const handleDelete = async () => {
         await appContext.deleteBuch(Number(id));

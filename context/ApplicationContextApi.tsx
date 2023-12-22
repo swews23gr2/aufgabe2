@@ -105,12 +105,11 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     };
 
     const getAlleBuecher = async (): Promise<Buch[]> => {
-        console.log('suche Buecher');
         const response = await getAlleBuecherApi(baseAxiosRequestConfig);
         handleGraphQLRequestError(
             response.data as unknown as GraphqlErrorResponse,
         );
-        console.log(response.data.data.buecher);
+        console.log('Request: ', response.data.data.buecher);
         return response.data.data.buecher.map((b) =>
             convertBuchResponseToBuch(b),
         );
@@ -224,5 +223,6 @@ const convertBuchResponseToBuch = (buchResponse: BuchResponse): Buch => {
         ...buchResponse,
         datum: new Date(buchResponse.datum),
         titel: buchResponse.titel.titel,
+        untertitel: buchResponse.titel.untertitel,
     };
 };

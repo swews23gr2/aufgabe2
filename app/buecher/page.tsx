@@ -11,13 +11,22 @@ import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { faExpand, faTable } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
-import { useBuecher } from '@/hooks/useBuecher';
+import useSWR from 'swr';
+import { Buch } from '@/api/buch';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
+import { cache } from 'swr/_internal';
 
 type ViewType = 'TABLE' | 'CARDS';
 
 const BuecherListe: React.FC = () => {
-    const { data: buecher, isLoading, error } = useBuecher();
+    const appContext = useApplicationContextApi();
+    const {
+        data: buecher,
+        error,
+        isLoading,
+    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher);
     const [viewType, setViewType] = useState<ViewType>('TABLE');
+    console.log('Cache Komp1: ', cache);
 
     if (error) return <ErrorBannerComponent message={error} />;
 

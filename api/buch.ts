@@ -22,6 +22,7 @@ export type BuchResponse = Omit<Buch, 'datum' | 'titel'> & {
     datum: string;
     titel: {
         titel: string;
+        untertitel: string;
     };
 };
 
@@ -31,7 +32,7 @@ export type BuchInputModell = Omit<BuchResponse, 'id' | 'version' | 'datum'> & {
 
 export type BuchUpdateModell = Omit<
     BuchResponse,
-    'lieferbar' | 'id' | 'rabatt'
+    'lieferbar' | 'id' | 'rabatt' | 'titel'
 > & {
     datum: Date;
     lieferbar: string;
@@ -78,6 +79,7 @@ export const getAlleBuecherApi = async (
         query: `query {
   buecher {
     id
+    version
     isbn
     rating
     art

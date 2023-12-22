@@ -16,6 +16,7 @@ import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
+import { useSWRConfig } from 'swr';
 
 export default function Create() {
     const appContext = useApplicationContextApi();
@@ -25,6 +26,7 @@ export default function Create() {
     const [response, setResponse] = useState<string>();
     const [error, setError] = useState<string | undefined>(undefined);
     const router = useRouter();
+    const { mutate } = useSWRConfig();
 
     const onSubmit = async (data: BuchInputModell) => {
         console.log('Form submitted', data);
@@ -34,6 +36,7 @@ export default function Create() {
             const response = await appContext.createBuch(data);
             console.log(response);
             setResponse(data.titel.titel);
+            await mutate('getAlleBuecher');
             reset();
             setTimeout(() => {
                 router.push('/buecher');
