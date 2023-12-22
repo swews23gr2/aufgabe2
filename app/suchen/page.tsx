@@ -8,27 +8,34 @@ import {
     GenericEntityListFilerComponent,
     PropsGenericEntityListFiler,
 } from '@/components/shared/GenericEntityListFilterComponent';
+import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
+
+type SearchCriteria = PropsGenericEntityListFiler<Buch>['searchCriteria'];
 
 const SuchFormular: React.FC = () => {
-    const [searchCriteria, setSearchCriteria] = useState<
-        PropsGenericEntityListFiler<Buch>['searchCriteria']
-    >({});
+    const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({});
 
-    const handleRadioboxChange = (radioboxName: string) => {
+    const handleRadioboxChange = (
+        e: ChangeEvent<HTMLInputElement>,
+        criteriaProp: keyof SearchCriteria,
+    ) => {
         setSearchCriteria(() => {
             return {
                 ...searchCriteria,
-                schlagwoerter: radioboxName,
+                [criteriaProp]: e.target.value,
             };
         });
     };
 
-    const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleCheckboxChange = <K extends keyof SearchCriteria>(
+        e: ChangeEvent<HTMLInputElement>,
+        criteriaProp: K,
+    ) => {
         setSearchCriteria((prevCriteria) => {
             const updatedCriteria = { ...prevCriteria };
             e.target.checked
-                ? (updatedCriteria.titel = e.target.value)
-                : delete updatedCriteria.titel;
+                ? (updatedCriteria[criteriaProp] = e.target.value)
+                : delete updatedCriteria[criteriaProp];
             return updatedCriteria;
         });
     };
@@ -46,30 +53,34 @@ const SuchFormular: React.FC = () => {
     return (
         <PageContentWrapperComponent title={'Bücher Suchen'}>
             <div>
-                <div>
-                    {renderInputField({
-                        type: 'radio',
-                        id: 'Typescript',
-                        value: 'typescript',
-                        checked: searchCriteria.schlagwoerter === 'Typescript',
-                        onChange: () => handleRadioboxChange('Typescript'),
-                    })}
-                    {renderInputField({
-                        type: 'radio',
-                        id: 'Javascript',
-                        value: 'javascript',
-                        checked: searchCriteria.schlagwoerter === 'Javascript',
-                        onChange: () => handleRadioboxChange('Javascript'),
-                    })}
-                </div>
-                <div>
-                    {renderInputField({
-                        type: 'checkbox',
-                        id: 'Phi',
-                        value: 'Phi',
-                        onChange: (e: ChangeEvent<HTMLInputElement>) =>
-                            handleCheckboxChange(e),
-                    })}
+                <div {...styles.searchBar()}>
+                    <div {...styles.radioButtonContainer()}>
+                        {renderInputField({
+                            type: 'radio',
+                            id: 'KINDLE',
+                            value: 'KINDLE',
+                            checked: searchCriteria.art === 'KINDLE',
+                            onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                                handleRadioboxChange(e, 'art'),
+                        })}
+                        {renderInputField({
+                            type: 'radio',
+                            id: 'DRUCKAUSGABE',
+                            value: 'DRUCKAUSGABE',
+                            checked: searchCriteria.art === 'DRUCKAUSGABE',
+                            onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                                handleRadioboxChange(e, 'art'),
+                        })}
+                    </div>
+                    <div {...styles.checkboxContainer}>
+                        {renderInputField({
+                            type: 'checkbox',
+                            id: 'Phi',
+                            value: 'Phi',
+                            onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                                handleCheckboxChange(e, 'titel'),
+                        })}
+                    </div>
                 </div>
                 {/* Hier weitere Eingabefelder einfügen */}
                 <div>
@@ -80,6 +91,29 @@ const SuchFormular: React.FC = () => {
             </div>
         </PageContentWrapperComponent>
     );
+};
+
+const styles: ExtendedStyleProps = {
+    radioButtonContainer: () => ({
+        style: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+    }),
+    checkboxContainer: () => ({
+        style: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+    }),
+    searchBar: () => ({
+        style: {
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 'var(--gap-4)',
+            alignItems: 'center',
+        },
+    }),
 };
 
 export default SuchFormular;
