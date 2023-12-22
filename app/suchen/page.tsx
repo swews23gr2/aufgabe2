@@ -3,23 +3,16 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
-import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
-import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { LoadingComponent } from '@/components/shared/LoadingComponent';
-import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
-import { GenericEntityListFilerComponent } from '@/components/shared/GenericEntityListFilterComponent';
-
-type SearchType = {
-    [key in keyof Partial<Buch>]: string;
-};
+import {
+    GenericEntityListFilerComponent,
+    PropsGenericEntityListFiler,
+} from '@/components/shared/GenericEntityListFilterComponent';
 
 const SuchFormular: React.FC = () => {
-    const appContext = useApplicationContextApi();
-    const { isLoading, error } = useFetch<Buch[]>(appContext.getAlleBuecher());
-
-    const [searchCriteria, setSearchCriteria] = useState<SearchType>({});
-
+    const [searchCriteria, setSearchCriteria] = useState<
+        PropsGenericEntityListFiler<Buch>['searchCriteria']
+    >({});
     const handleRadioboxChange = (radioboxName: string) => {
         setSearchCriteria(() => {
             return {
@@ -53,41 +46,35 @@ const SuchFormular: React.FC = () => {
         </div>
     );
 
-    if (error) return <ErrorBannerComponent message={error} />;
-
     return (
         <PageContentWrapperComponent title={'Bücher Suchen'}>
-            {isLoading ? (
-                <LoadingComponent />
-            ) : (
+            <div>
+                <div>
+                    {renderRadiobutton('typescript', 'Typescript')}
+                    {renderRadiobutton('javascript', 'Javascript')}
+                </div>
                 <div>
                     <div>
-                        {renderRadiobutton('typescript', 'Typescript')}
-                        {renderRadiobutton('javascript', 'Javascript')}
-                    </div>
-                    <div>
-                        <div>
-                            {renderInputField('checkbox1', 'Phi', (e) =>
-                                setSearchCriteria((prevCriteria) => {
-                                    const updatedCriteria = { ...prevCriteria };
-                                    if (!e.target.checked) {
-                                        delete updatedCriteria.titel;
-                                    } else {
-                                        updatedCriteria.titel = e.target.value;
-                                    }
-                                    return updatedCriteria;
-                                }),
-                            )}
-                        </div>
-                    </div>
-                    {/* Hier weitere Eingabefelder einfügen */}
-                    <div>
-                        <GenericEntityListFilerComponent
-                            searchCriteria={searchCriteria}
-                        />
+                        {renderInputField('checkbox1', 'Phi', (e) =>
+                            setSearchCriteria((prevCriteria) => {
+                                const updatedCriteria = { ...prevCriteria };
+                                if (!e.target.checked) {
+                                    delete updatedCriteria.titel;
+                                } else {
+                                    updatedCriteria.titel = e.target.value;
+                                }
+                                return updatedCriteria;
+                            }),
+                        )}
                     </div>
                 </div>
-            )}
+                {/* Hier weitere Eingabefelder einfügen */}
+                <div>
+                    <GenericEntityListFilerComponent
+                        searchCriteria={searchCriteria}
+                    />
+                </div>
+            </div>
         </PageContentWrapperComponent>
     );
 };
