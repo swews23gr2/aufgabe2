@@ -1,7 +1,7 @@
 'use client';
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+import React, { ChangeEvent, InputHTMLAttributes, useState } from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
 import { Buch } from '@/api/buch';
 import {
@@ -13,6 +13,7 @@ const SuchFormular: React.FC = () => {
     const [searchCriteria, setSearchCriteria] = useState<
         PropsGenericEntityListFiler<Buch>['searchCriteria']
     >({});
+
     const handleRadioboxChange = (radioboxName: string) => {
         setSearchCriteria(() => {
             return {
@@ -22,51 +23,53 @@ const SuchFormular: React.FC = () => {
         });
     };
 
-    const renderRadiobutton = (value: string, label: string) => (
-        <div key={value}>
-            <input
-                type="radio"
-                id={`option-${value}`}
-                value={value}
-                checked={searchCriteria.schlagwoerter === value}
-                onChange={() => handleRadioboxChange(value)}
-            />
-            <label htmlFor={`option-${value}`}>{label}</label>
-        </div>
-    );
+    const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchCriteria((prevCriteria) => {
+            const updatedCriteria = { ...prevCriteria };
+            e.target.checked
+                ? (updatedCriteria.titel = e.target.value)
+                : delete updatedCriteria.titel;
+            return updatedCriteria;
+        });
+    };
 
-    const renderInputField = (
-        id: string,
-        value: string,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    ) => (
-        <div key={id}>
-            <input type="checkbox" id={id} value={value} onChange={onChange} />
-            <label htmlFor={id}>{value}</label>
-        </div>
-    );
+    const renderInputField = (props: InputHTMLAttributes<any>) => {
+        const { id, value } = props;
+        return (
+            <div key={id}>
+                <input {...props} />
+                <label htmlFor={id}>{value}</label>
+            </div>
+        );
+    };
 
     return (
         <PageContentWrapperComponent title={'Bücher Suchen'}>
             <div>
                 <div>
-                    {renderRadiobutton('typescript', 'Typescript')}
-                    {renderRadiobutton('javascript', 'Javascript')}
+                    {renderInputField({
+                        type: 'radio',
+                        id: 'Typescript',
+                        value: 'typescript',
+                        checked: searchCriteria.schlagwoerter === 'Typescript',
+                        onChange: () => handleRadioboxChange('Typescript'),
+                    })}
+                    {renderInputField({
+                        type: 'radio',
+                        id: 'Javascript',
+                        value: 'javascript',
+                        checked: searchCriteria.schlagwoerter === 'Javascript',
+                        onChange: () => handleRadioboxChange('Javascript'),
+                    })}
                 </div>
                 <div>
-                    <div>
-                        {renderInputField('checkbox1', 'Phi', (e) =>
-                            setSearchCriteria((prevCriteria) => {
-                                const updatedCriteria = { ...prevCriteria };
-                                if (!e.target.checked) {
-                                    delete updatedCriteria.titel;
-                                } else {
-                                    updatedCriteria.titel = e.target.value;
-                                }
-                                return updatedCriteria;
-                            }),
-                        )}
-                    </div>
+                    {renderInputField({
+                        type: 'checkbox',
+                        id: 'Phi',
+                        value: 'Phi',
+                        onChange: (e: ChangeEvent<HTMLInputElement>) =>
+                            handleCheckboxChange(e),
+                    })}
                 </div>
                 {/* Hier weitere Eingabefelder einfügen */}
                 <div>
