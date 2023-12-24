@@ -8,8 +8,8 @@ import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 
 export const NavigationBarComponent: React.FC = () => {
     const { isSmall } = useMediaQuery();
-    const appContext = useApplicationContextApi();
     const { navigationButtons } = useApplicationNavigation();
+    const appContext = useApplicationContextApi();
 
     return (
         <nav {...styles.navbarContainer(isSmall)}>
@@ -17,7 +17,7 @@ export const NavigationBarComponent: React.FC = () => {
                 <Link href="/" {...styles.brand()}>
                     HKA Bücherverwaltung
                 </Link>
-                {appContext.tokenExistsAndIsValid() ? (
+                {appContext.tokenExistsAndIsValid() && appContext.isMounted ? (
                     <div {...styles.navbarButtonContainer()}>
                         {navigationButtons.map((button) => (
                             <button

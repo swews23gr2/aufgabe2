@@ -1,7 +1,13 @@
 'use client';
 // eslint-disable-next-line eslint-comments/disable-enable-pair
 /* eslint-disable no-unused-vars,@typescript-eslint/ban-ts-comment */
-import React, { createContext, PropsWithChildren, useContext } from 'react';
+import React, {
+    createContext,
+    PropsWithChildren,
+    useContext,
+    useEffect,
+    useState,
+} from 'react';
 import axios, {
     AxiosRequestConfig,
     AxiosResponse,
@@ -22,6 +28,7 @@ import {
 } from '@/api/buch';
 
 type ContextOutput = {
+    isMounted: boolean;
     login: (loginDaten: LoginDaten) => Promise<void>;
     logout: () => void;
     tokenExistsAndIsValid: () => boolean;
@@ -45,6 +52,11 @@ export const useApplicationContextApi = () => {
 type Props = PropsWithChildren;
 export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const authenticationToken =
         typeof localStorage !== 'undefined'
@@ -185,6 +197,7 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     return (
         <ApplicationContext.Provider
             value={{
+                isMounted,
                 login,
                 logout,
                 tokenExistsAndIsValid,
