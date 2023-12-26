@@ -1,0 +1,30 @@
+@startuml "Buch anlegen"
+
+state IndexTsx {
+    [*] --> Anmeldung
+    Anmeldung --> Startseite : Logindaten korrekt
+    Anmeldung --> [*] : Logindaten inkorrekt
+
+    ' Startseite --> Startseite: Menüpunkt "Startseite"
+    Startseite --> Bücher : Menüpunkt "Bücher"
+    Startseite --> Anlegen: Menüpunkt "Anlegen"
+    Startseite --> Anmeldung: Menüpunkt "Abmelden"
+
+    state Bücher {
+      [*] --> Buchdetails : Buch anklicken
+      Buchdetails --> [*] : Buch löschen
+    }
+
+    state Anlegen {
+      state DatenValide <<choice>>
+      [*] --> DatenValide : Button "Buch anlegen"
+      DatenValide --> DatenValide : Daten fehlerhaft
+      DatenValide --> Warten : Daten valide
+      Warten --> Bücher : Buch angelegt
+      Warten --> NetworkError : Fehler
+      NetworkError --> [*]
+    }
+
+}
+
+@enduml
