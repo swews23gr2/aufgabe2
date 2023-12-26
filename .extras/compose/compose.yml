@@ -1,0 +1,28 @@
+include:
+  # Pfad auf die eigene Verzeichnisstruktur anpassen
+  - path: ../../../buch/.extras/compose/compose.yml
+
+# networks:
+#   aufgabe2:
+#     name: aufgabe2
+
+services:
+  spa:
+    # networks:
+    #   - aufgabe2
+    depends_on:
+      - buch
+    image: swews23gr2/spa:2023.12.0-bookworm
+    ports:
+      - published: 3001
+        target: 3000
+    env_file: spa.env
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G

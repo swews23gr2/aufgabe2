@@ -7,7 +7,7 @@
 # S t a g e   b u i l d e r
 # ---------------------------------------------------------------------------------------
 ARG NODE_VERSION=20.10.0
-FROM node:${NODE_VERSION}-bookworm AS builder
+FROM node:${NODE_VERSION}-bookworm-slim AS builder
 
 WORKDIR /home/node
 
@@ -15,7 +15,6 @@ COPY package.json package-lock.json next.config.mjs tsconfig*.json ./
 COPY api ./api
 COPY app ./app
 COPY components ./components
-COPY config ./config
 COPY context ./context
 COPY helper ./helper
 COPY hooks ./hooks
@@ -23,11 +22,15 @@ COPY theme ./theme
 COPY public ./public
 
 RUN npm i -g --no-audit --no-fund npm
+
 USER node
+
+# TODO: Wie kann man diese Umgebungsvariable bei 'Next.js' mit 'Docker Compose' zur Laufzeit festlegen?
+# Nach 'npm run build' nicht mehr änderbar
+ENV NEXT_PUBLIC_BACKEND_SERVER_URL=https://localhost:3000/graphql
 
 RUN <<EOF
 npm ci --no-audit --no-fund
-npm i -D --no-audit --no-fund rimraf
 npm run build
 EOF
 
@@ -66,9 +69,7 @@ COPY --from=builder --chown=nonroot:nonroot /home/node/.next/static ./.next/stat
 COPY --from=dumb-init /usr/bin/dumb-init /usr/bin/dumb-init
 
 USER nonroot
-EXPOSE 3000
 
-ENV HOSTNAME "0.0.0.0"
-ENV DOCKER_ENV=true
+EXPOSE 3000
 
 ENTRYPOINT ["dumb-init", "/nodejs/bin/node", "server.js"]

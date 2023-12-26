@@ -1,4 +1,3 @@
-import { backendUrl } from '@/config/config';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type LoginDaten = {
@@ -25,6 +24,6 @@ export const loginApi = async (
                         }
                     }`,
     });
-    const requestConfig = { ...baseRequestConfig, url: backendUrl, data: body };
+    const requestConfig = { ...baseRequestConfig, data: body };
     return await axios.request(requestConfig);
 };

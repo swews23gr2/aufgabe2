@@ -16,5 +16,5 @@ trim_trailing_whitespace = true
 [*.{ts,mts,tsx,js,mjs,cjs,jsx,puml}]
 indent_size = 4
 
-[Dockerfile]
+[Dockerfile*]
 indent_size = 4

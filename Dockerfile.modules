@@ -2,7 +2,7 @@
 
 # Großes Image für "next start"
 # In "next.config.mjs" ggf. "output: 'standalone'" vorher auskommentieren
-# Befehl: docker buildx build -f Dockerfile.modules --sbom true --no-cache --tag swews23gr2/spa:2023.12.0-distroless .
+# Befehl: docker buildx build --no-cache --tag swews23gr2/spa:2023.12.0-modules --file Dockerfile.modules .
 
 # ---------------------------------------------------------------------------------------
 # S t a g e   b u i l d e r
@@ -16,7 +16,6 @@ COPY package.json package-lock.json next.config.mjs tsconfig*.json ./
 COPY api ./api
 COPY app ./app
 COPY components ./components
-COPY config ./config
 COPY context ./context
 COPY helper ./helper
 COPY hooks ./hooks
@@ -68,10 +67,10 @@ EOF
 FROM gcr.io/distroless/nodejs20-debian12:nonroot
 
 LABEL org.opencontainers.image.title="swews23gr2-buch-spa" \
-  org.opencontainers.image.description="SPA für 'buch' mit distroless-Image" \
-  org.opencontainers.image.version="2023.10.0-distroless" \
-  org.opencontainers.image.licenses="GPL-3.0-or-later" \
-  org.opencontainers.image.authors="swews23gr2"
+    org.opencontainers.image.description="SPA für 'buch' mit distroless-Image" \
+    org.opencontainers.image.version="2023.10.0-distroless" \
+    org.opencontainers.image.licenses="GPL-3.0-or-later" \
+    org.opencontainers.image.authors="swews23gr2"
 
 WORKDIR /opt/app
 
