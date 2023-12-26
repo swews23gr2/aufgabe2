@@ -2,25 +2,28 @@
 import React from 'react';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { useApplicationNavigation } from '@/hooks/useApplicationNavigation';
+import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 
 export const BottomNavigationComponent: React.FC = () => {
     const { navigationButtons } = useApplicationNavigation();
+    const appContext = useApplicationContextApi();
 
     return (
         <div {...styles.bottomNavContainer()}>
             <div {...styles.bottomNavContent()}>
                 <div {...styles.buttonsListContainer()}>
-                    {navigationButtons.map((button) => (
-                        <React.Fragment key={button.label}>
-                            <div
-                                onClick={button.onClick}
-                                {...styles.navButtonItem()}
-                            >
-                                {button.icon}
-                                {button.label}
-                            </div>
-                        </React.Fragment>
-                    ))}
+                    {appContext.isMounted &&
+                        navigationButtons.map((button) => (
+                            <React.Fragment key={button.label}>
+                                <div
+                                    onClick={button.onClick}
+                                    {...styles.navButtonItem()}
+                                >
+                                    {button.icon}
+                                    {button.label}
+                                </div>
+                            </React.Fragment>
+                        ))}
                 </div>
             </div>
         </div>

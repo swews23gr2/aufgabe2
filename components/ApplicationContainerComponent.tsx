@@ -14,17 +14,18 @@ export const ApplicationContainerComponent: React.FC<Props> = (
 ) => {
     const appContext = useApplicationContextApi();
     const [tokenIsValid, setTokenIsValid] = useState<boolean | undefined>(
-        appContext.tokenExistsAndIsValid(),
+        undefined,
     );
 
     useEffect(() => {
+        setTokenIsValid(appContext.tokenExistsAndIsValid());
         appContext.initializeRequestInterceptor(setTokenIsValid);
     }, [appContext]);
 
     return (
         <div {...styles.appContainer()}>
             <NavigationBarComponent />
-            {tokenIsValid ? (
+            {appContext.isMounted && tokenIsValid ? (
                 <main {...styles.mainContentContainer()}>{props.children}</main>
             ) : (
                 <LoginComponent />

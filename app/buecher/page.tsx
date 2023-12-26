@@ -7,7 +7,7 @@ import SearchInputComponent from '@/components/SearchInputComponent';
 import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
 import { BuecherTabelleComponent } from '@/components/BuecherTabelleComponent';
-import { BucherCardViewComponent } from '@/components/BucherCardViewComponent';
+import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
@@ -52,7 +52,7 @@ const BuecherListe: React.FC = () => {
                                         buecher={buecher}
                                     />
                                 ) : (
-                                    <BucherCardViewComponent
+                                    <BuecherCardViewComponent
                                         buecher={buecher}
                                     />
                                 )

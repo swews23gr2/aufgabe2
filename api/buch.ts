@@ -114,22 +114,24 @@ export const getBuchByIdApi = async (
 export const createBuchApi = async (
     buchInputModell: BuchInputModell,
     baseRequestConfig: AxiosRequestConfig<string>,
-): Promise<AxiosResponse<CreateBuchResponse>> => {
+): Promise<AxiosResponse> => {
     const body = JSON.stringify({
         query: `mutation {
   create(
     input: {
       isbn: "${buchInputModell.isbn}",
       rating: ${buchInputModell.rating},
-      art: ${buchInputModell.art},
+      art: ${buchInputModell.art.toUpperCase()},
       preis: ${buchInputModell.preis},
-      rabatt: ${buchInputModell.rabatt},
+      rabatt: ${buchInputModell ? Number(buchInputModell.rabatt) / 100 : 0},
       lieferbar: ${buchInputModell.lieferbar},
-      datum: "${buchInputModell.datum.toISOString()}",
+      datum: "${new Date(buchInputModell.datum).toISOString()}",
       homepage: "${buchInputModell.homepage}",
-      schlagwoerter: [${formatKeywordsForRequest(
-          buchInputModell.schlagwoerter,
-      )}],
+      schlagwoerter: [${
+          buchInputModell.schlagwoerter
+              ? formatKeywordsForRequest(buchInputModell.schlagwoerter)
+              : ''
+      }],
       titel: {
         titel: "${buchInputModell.titel.titel}",
         untertitel: "${
@@ -146,6 +148,7 @@ export const createBuchApi = async (
   }
 }`,
     });
+    console.log(body);
     const requestConfig = { ...baseRequestConfig, data: body };
     return await axios.request(requestConfig);
 };

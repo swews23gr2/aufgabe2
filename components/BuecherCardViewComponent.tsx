@@ -9,7 +9,7 @@ type Props = {
     buecher: Buch[];
 };
 
-export const BucherCardViewComponent: React.FC<Props> = (props: Props) => {
+export const BuecherCardViewComponent: React.FC<Props> = (props: Props) => {
     const { buecher } = props;
     const router = useRouter();
 
