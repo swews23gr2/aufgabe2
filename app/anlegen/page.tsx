@@ -33,8 +33,8 @@ export default function Create() {
         setResponse(undefined);
         setError(undefined);
         try {
-            const response = await appContext.createBuch(data);
-            console.log(response);
+            const res = await appContext.createBuch(data);
+            console.log(res.data);
             setResponse(data.titel.titel);
             await mutate('getAlleBuecher');
             reset();

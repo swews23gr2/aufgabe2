@@ -133,7 +133,7 @@ export const getBuchByIdApi = async (
 export const createBuchApi = async (
     buchInputModell: BuchInputModell,
     baseRequestConfig: AxiosRequestConfig<string>,
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponse<CreateBuchResponse>> => {
     const body = JSON.stringify({
         query: `mutation {
   create(

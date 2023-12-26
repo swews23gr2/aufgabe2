@@ -18,7 +18,6 @@ import {
     BuchDetailsComponent,
     ListEntry,
 } from '@/components/BuchDetailsComponent';
-import { cache } from 'swr/_internal';
 import useSWR from 'swr';
 
 const BuchItem: React.FC = () => {
@@ -28,17 +27,14 @@ const BuchItem: React.FC = () => {
 
     const appContext = useApplicationContextApi();
 
+    const fetcher = (inputId: string) =>
+        appContext.getBuchById(Number(inputId));
+
     const {
-        data: buecher,
+        data: buch,
         error,
         isLoading,
-    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher, {
-        revalidateOnMount: false,
-    });
-
-    console.log('Cache Komp2: ', cache);
-
-    const buch = buecher?.find((buch) => buch.id === Number(id));
+    } = useSWR<Buch, string>(`${id}`, fetcher);
 
     const handleDelete = async () => {
         await appContext.deleteBuch(Number(id));

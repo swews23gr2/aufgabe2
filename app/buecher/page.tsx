@@ -14,7 +14,6 @@ import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import useSWR from 'swr';
 import { Buch } from '@/api/buch';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { cache } from 'swr/_internal';
 
 type ViewType = 'TABLE' | 'CARDS';
 
@@ -26,7 +25,6 @@ const BuecherListe: React.FC = () => {
         isLoading,
     } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher);
     const [viewType, setViewType] = useState<ViewType>('TABLE');
-    console.log('Cache Komp1: ', cache);
 
     if (error) return <ErrorBannerComponent message={error} />;
 

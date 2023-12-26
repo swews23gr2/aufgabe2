@@ -18,7 +18,6 @@ import { InputFieldValidationComponent } from '@/components/shared/InputFieldVal
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { useEffect, useState } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
-import { cache } from 'swr/_internal';
 
 export default function Update() {
     const { register, handleSubmit, formState, reset, setValue } =
@@ -32,15 +31,16 @@ export default function Update() {
     const router = useRouter();
     const appContext = useApplicationContextApi();
 
+    const fetcher = (inputId: string) =>
+        appContext.getBuchById(Number(inputId));
+
     const {
-        data: buecher,
+        data: buch,
         error,
         isLoading,
-    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher, {
+    } = useSWR<Buch, string>(`${id}`, fetcher, {
         revalidateOnMount: false,
     });
-
-    const buch = buecher?.find((buch) => buch.id === Number(id));
 
     const { mutate } = useSWRConfig();
 
@@ -89,11 +89,9 @@ export default function Update() {
         }
         console.log('Form submitted', data);
         try {
-            const response = await appContext.updateBuch(data);
-            console.log(response);
+            await appContext.updateBuch(data);
             setResponse(buch?.titel);
             await mutate('getAlleBuecher');
-            console.log('CacheKomp3: ', cache);
             reset();
             router.push(`/buecher/${id}`);
         } catch (err) {
