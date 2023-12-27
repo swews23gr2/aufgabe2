@@ -11,7 +11,7 @@ import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent'
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ChipListComponent } from '@/components/shared/ChipListComponent';
 
-type PropsGenericEntityListFiler<T> = {
+export type PropsGenericEntityListFiler<T> = {
     searchCriteria: {
         [key in keyof Partial<T>]: string;
     };
@@ -38,6 +38,8 @@ export const GenericEntityListFilerComponent: React.FC<
                           entries.find((e) => {
                               return (
                                   e[0] === a[0] &&
+                                  e[1] !== null &&
+                                  a[1] !== undefined &&
                                   e[1]
                                       .toString()
                                       .toLowerCase()
