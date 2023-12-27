@@ -9,7 +9,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { BuchUpdateModell, Buch } from '@/api/buch';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
@@ -24,23 +23,18 @@ export default function Update() {
         useForm<BuchUpdateModell>({ mode: 'onBlur' });
     const { id } = useParams<{ id: string }>();
     const { errors } = formState;
-    const [response, setResponse] = useState<string>();
+    const [response, setResponse] = useState<string | undefined>(undefined);
     const [errorCreate, setErrorCreate] = useState<string | undefined>(
         undefined,
     );
     const router = useRouter();
     const appContext = useApplicationContextApi();
 
-    const fetcher = (inputId: string) =>
-        appContext.getBuchById(Number(inputId));
-
     const {
         data: buch,
         error,
         isLoading,
-    } = useSWR<Buch, string>(`${id}`, fetcher, {
-        revalidateOnMount: false,
-    });
+    } = useSWR<Buch, string>(`${id}`, () => appContext.getBuchById(Number(id)));
 
     const { mutate } = useSWRConfig();
 
@@ -52,41 +46,34 @@ export default function Update() {
 
     const DateToString = (date: Date | undefined): string => {
         if (date === undefined) return '';
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const year = date.getFullYear();
-
-        return `${day}.${month}.${year}`;
+        return new Intl.DateTimeFormat('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).format(date);
     };
 
-    const BooleanToString = (lieferbar: boolean): string => {
-        if (lieferbar) {
-            return 'true';
-        } else {
-            return 'false';
-        }
-    };
+    const BooleanToString = (lieferbar: boolean): string =>
+        lieferbar ? 'true' : 'false';
 
     useEffect(() => {
-        if (buch !== undefined) {
-            setValue('schlagwoerter', buch.schlagwoerter);
-            setValue('art', buch.art);
-            setValue('lieferbar', BooleanToString(buch.lieferbar));
-            setValue('isbn', buch.isbn);
-            setValue('preis', buch.preis);
-            setValue('rating', buch.rating);
-            setValue('rabatt', toRabatt(buch.rabatt));
-            setValue('homepage', buch.homepage);
-        }
+        if (buch === undefined) return;
+        setValue('schlagwoerter', buch.schlagwoerter);
+        setValue('art', buch.art);
+        setValue('lieferbar', BooleanToString(buch.lieferbar));
+        setValue('isbn', buch.isbn);
+        setValue('preis', buch.preis);
+        setValue('rating', buch.rating);
+        setValue('rabatt', toRabatt(buch.rabatt));
+        setValue('homepage', buch.homepage);
     }, [buch, setValue]);
 
     const onSubmit = async (data: BuchUpdateModell) => {
         setResponse(undefined);
         setErrorCreate(undefined);
-        if (buch !== undefined) {
-            data.id = buch?.id.toString();
-            data.version = buch?.version;
-        }
+        if (buch === undefined) return;
+        data.id = buch?.id.toString();
+        data.version = buch?.version;
         console.log('Form submitted', data);
         try {
             await appContext.updateBuch(data);
@@ -108,15 +95,12 @@ export default function Update() {
     return (
         <div className="container">
             <h1 {...styles.title()}>Buch: {buch?.titel} ändern</h1>
-            <span
-                className="badge rounded-pill text-bg-warning"
-                {...styles.info()}
-            >
+            <span {...styles.info()}>
                 Titel und Untertitel können nicht geändert werden!
             </span>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
-                    htmlforlabel="isbn"
+                    htmlForLabel="isbn"
                     label="ISBN"
                     error={errors.isbn?.message}
                     className="form-control"
@@ -135,7 +119,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlforlabel="preis"
+                    htmlForLabel="preis"
                     label="Preis"
                     error={errors.preis?.message}
                     className="form-control"
@@ -159,7 +143,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlforlabel="rating"
+                    htmlForLabel="rating"
                     label="Rating"
                     error={errors.rating?.message}
                     className="form-control"
@@ -182,7 +166,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlforlabel="rabatt"
+                    htmlForLabel="rabatt"
                     label="Rabatt %"
                     error={errors.rabatt?.message}
                     className="form-control"
@@ -198,7 +182,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlforlabel="erscheinungsdatum"
+                    htmlForLabel="erscheinungsdatum"
                     label="Erscheinungsdatum"
                     error={errors.datum?.message}
                     className="form-control"
@@ -218,7 +202,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlforlabel="homepage"
+                    htmlForLabel="homepage"
                     label="Homepage"
                     error={errors.homepage?.message}
                     className="form-control"
@@ -361,6 +345,7 @@ const styles: ExtendedStyleProps = {
         },
     }),
     info: () => ({
+        className: 'badge rounded-pill text-bg-warning',
         style: {
             marginBottom: 'var(--gap-2)',
             marginTop: 'var(--gap-0)',

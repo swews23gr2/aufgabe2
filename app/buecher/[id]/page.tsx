@@ -27,14 +27,11 @@ const BuchItem: React.FC = () => {
 
     const appContext = useApplicationContextApi();
 
-    const fetcher = (inputId: string) =>
-        appContext.getBuchById(Number(inputId));
-
     const {
         data: buch,
         error,
         isLoading,
-    } = useSWR<Buch, string>(`${id}`, fetcher);
+    } = useSWR<Buch, string>(`${id}`, () => appContext.getBuchById(Number(id)));
 
     const handleDelete = async () => {
         await appContext.deleteBuch(Number(id));
@@ -69,43 +66,38 @@ const BuchItem: React.FC = () => {
 
     if (error !== undefined) return <ErrorBannerComponent message={error} />;
 
-    if (buch !== undefined)
-        return (
-            <PageContentWrapperComponent title={`Buchdetails - ${buch.titel}`}>
-                <div {...styles.pageContainer(isSmall)}>
-                    <div {...styles.bookPictureAndIconContainer()}>
-                        <div {...styles.bookPicture()}></div>
-                        <div {...styles.buttonsContainer()}>
-                            <button
-                                type="button"
-                                {...styles.editButton()}
-                                onClick={() =>
-                                    router.push(`/buecher/${id}/edit`)
-                                }
-                            >
-                                Bearbeiten
-                            </button>
-                            <button
-                                type="button"
-                                {...styles.deleteButton()}
-                                onClick={handleDelete}
-                            >
-                                Buch löschen
-                            </button>
-                        </div>
+    return (
+        <PageContentWrapperComponent title={`Buchdetails - ${buch?.titel}`}>
+            <div {...styles.pageContainer(isSmall)}>
+                <div {...styles.bookPictureAndIconContainer()}>
+                    <div {...styles.bookPicture()}></div>
+                    <div {...styles.buttonsContainer()}>
+                        <button
+                            type="button"
+                            {...styles.editButton()}
+                            onClick={() => router.push(`/buecher/${id}/edit`)}
+                        >
+                            Bearbeiten
+                        </button>
+                        <button
+                            type="button"
+                            {...styles.deleteButton()}
+                            onClick={handleDelete}
+                        >
+                            Buch löschen
+                        </button>
                     </div>
-                    <BuchDetailsComponent entries={buchDetails} />
                 </div>
-                <CenteredSectionComponent>
-                    <div {...styles.secondSectionTitle()}>
-                        Vergleichbare Bücher
-                    </div>
-                    <GenericEntityListFilerComponent
-                        searchCriteria={{ art: buch.art }}
-                    />
-                </CenteredSectionComponent>
-            </PageContentWrapperComponent>
-        );
+                <BuchDetailsComponent entries={buchDetails} />
+            </div>
+            <CenteredSectionComponent>
+                <div {...styles.secondSectionTitle()}>Vergleichbare Bücher</div>
+                <GenericEntityListFilerComponent
+                    searchCriteria={{ art: buch?.art }}
+                />
+            </CenteredSectionComponent>
+        </PageContentWrapperComponent>
+    );
 };
 
 const styles: ExtendedStyleProps = {

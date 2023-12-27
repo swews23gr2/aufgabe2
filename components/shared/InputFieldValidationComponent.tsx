@@ -3,7 +3,7 @@ import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { UseFormRegisterReturn } from 'react-hook-form';
 
 type InputFieldValidationComponentProps = InputHTMLAttributes<any> & {
-    htmlforlabel: string;
+    htmlForLabel: string;
     label: string;
     rest: UseFormRegisterReturn<string>;
     error?: string | undefined;
@@ -12,11 +12,11 @@ type InputFieldValidationComponentProps = InputHTMLAttributes<any> & {
 export const InputFieldValidationComponent: React.FC<
     InputFieldValidationComponentProps
 > = (props: InputFieldValidationComponentProps) => {
-    const { htmlforlabel, label, error, rest } = props;
+    const { htmlForLabel, label, error, rest } = props;
     return (
         <div className="form-floating mb-3">
             <input {...props} {...rest} />
-            <label htmlFor={htmlforlabel}>{label}</label>
+            <label htmlFor={htmlForLabel}>{label}</label>
             <p {...styles.errors()}>{error}</p>
         </div>
     );
