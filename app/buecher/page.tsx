@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
 import SearchInputComponent from '@/components/SearchInputComponent';
-import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
 import { BuecherTabelleComponent } from '@/components/BuecherTabelleComponent';
 import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent';
@@ -14,6 +13,7 @@ import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { faExpand, faTable } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
+import useSWR from 'swr';
 
 type ViewType = 'TABLE' | 'CARDS';
 
@@ -23,17 +23,22 @@ const BuecherListe: React.FC = () => {
         data: buecher,
         isLoading,
         error,
-    } = useFetch<Buch[]>(appContext.getAlleBuecher());
+    } = useSWR<Buch[], string>('getAlleBuecher', appContext.getAlleBuecher);
 
     const [viewType, setViewType] = useState<ViewType>('TABLE');
 
     if (error) return <ErrorBannerComponent message={error} />;
 
-    return (
-        <PageContentWrapperComponent title={'Bücher'}>
-            {isLoading ? (
+    if (isLoading)
+        return (
+            <PageContentWrapperComponent title={'Bücher'}>
                 <LoadingComponent />
-            ) : (
+            </PageContentWrapperComponent>
+        );
+
+    if (buecher !== undefined)
+        return (
+            <PageContentWrapperComponent title={'Bücher'}>
                 <div>
                     <SearchInputComponent
                         data={buecher}
@@ -67,9 +72,8 @@ const BuecherListe: React.FC = () => {
                         }
                     </SearchInputComponent>
                 </div>
-            )}
-        </PageContentWrapperComponent>
-    );
+            </PageContentWrapperComponent>
+        );
 };
 
 type PropsViewSwitch = {
