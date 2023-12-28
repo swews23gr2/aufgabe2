@@ -9,13 +9,13 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { BuchInputModell } from '../../api/buch';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from 'react';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
+import { mutate } from 'swr';
 
 export default function Create() {
     const appContext = useApplicationContextApi();
@@ -31,9 +31,9 @@ export default function Create() {
         setResponse(undefined);
         setError(undefined);
         try {
-            const response = await appContext.createBuch(data);
-            console.log(response);
+            await appContext.createBuch(data);
             setResponse(data.titel.titel);
+            await mutate('getAlleBuecher');
             reset();
             setTimeout(() => {
                 router.push('/buecher');
