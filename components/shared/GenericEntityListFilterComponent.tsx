@@ -26,7 +26,7 @@ export const GenericEntityListFilerComponent: React.FC<
         data: buecher,
         isLoading,
         error,
-    } = useSWR<Buch[], string>(appContext.getAlleBuecher());
+    } = useSWR<Buch[], string>('GetAlleBuecher', appContext.getAlleBuecher);
 
     useEffect(() => {
         const filterBooks = (): Buch[] => {
