@@ -50,6 +50,16 @@ const SuchFormular: React.FC = () => {
         );
     };
 
+    const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSearchCriteria((prevCriteria) => {
+            const updatedCriteria = { ...prevCriteria };
+            isNaN(parseInt(e.target.value))
+                ? delete updatedCriteria['rating']
+                : (updatedCriteria['rating'] = e.target.value);
+            return updatedCriteria;
+        });
+    };
+
     return (
         <PageContentWrapperComponent title={'Bücher Suchen'}>
             <div>
@@ -81,6 +91,14 @@ const SuchFormular: React.FC = () => {
                                 handleCheckboxChange(e, 'titel'),
                         })}
                     </div>
+                    <select onChange={(e) => handleSelectionChange(e)}>
+                        <option selected>Bewertung wählen</option>
+                        <option value="0">1 Stern</option>
+                        <option value="1">2 Sterne</option>
+                        <option value="2">3 Sterne</option>
+                        <option value="3">4 Sterne</option>
+                        <option value="4">5 Sterne</option>
+                    </select>
                 </div>
                 {/* Hier weitere Eingabefelder einfügen */}
                 <div>
@@ -108,6 +126,10 @@ const styles: ExtendedStyleProps = {
     }),
     searchBar: () => ({
         style: {
+            border: 'var(--br-8xs) solid var(--color-main)',
+            borderRadius: '5px',
+            padding: 'var(--padding-1)',
+            marginBottom: 'var(--padding-2)',
             display: 'flex',
             flexDirection: 'row',
             gap: 'var(--gap-4)',

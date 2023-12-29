@@ -55,9 +55,11 @@ export const GenericEntityListFilerComponent: React.FC<
     const formatSearchCriteriaList = (): string[] => {
         return Object.entries(searchCriteria).map((entry) => {
             const [key, value] = entry;
+            let updatedValue = undefined;
+            if (key === 'rating') updatedValue = parseInt(value) + 1;
             return `${`${key.charAt(0).toUpperCase()}${key
                 .slice(1)
-                .toLowerCase()}`}: ${value}`;
+                .toLowerCase()}`}: ${updatedValue ?? value}`;
         });
     };
 
