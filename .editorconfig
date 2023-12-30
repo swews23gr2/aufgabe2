@@ -13,7 +13,7 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{ts,mts,tsx,js,mjs,cjs,jsx,puml}]
+[*.{ts,mts,tsx,js,mjs,cjs,jsx,plantuml}]
 indent_size = 4
 
 [Dockerfile]

@@ -5,26 +5,42 @@ state IndexTsx {
     Anmeldung --> Startseite : Logindaten korrekt
     Anmeldung --> [*] : Logindaten inkorrekt
 
-    ' Startseite --> Startseite: Menüpunkt "Startseite"
     Startseite --> Bücher : Menüpunkt "Bücher"
-    Startseite --> Anlegen: Menüpunkt "Anlegen"
+    Startseite --> BuchAnlegenFormular: Menüpunkt "Anlegen"
     Startseite --> Anmeldung: Menüpunkt "Abmelden"
 
-    state Bücher {
-      [*] --> Buchdetails : Buch anklicken
-      Buchdetails --> [*] : Buch löschen
+    Buchdetails --> BuchÄndernFormular : Button "Bearbeiten"
+    Buchdetails  --> Bücher : Button "Buch löschen"
+
+    Bücher --> Buchdetails : Buch anklicken
+
+    state BuchÄndernFormular {
+        state "Warten" as ÄndernWarten
+        state "Fehlermeldung" as ÄndernFehler
+        state ÄndernDatenValide <<choice>>
+
+        [*] --> ÄndernDatenValide : Button "Buch ändern"
+        ÄndernDatenValide --> ÄndernWarten : Daten valide
+        ÄndernDatenValide --> ÄndernDatenValide : Daten fehlerhaft
+        ÄndernWarten --> Buchdetails : Buch geändert
+        ÄndernWarten --> ÄndernFehler : Fehler
+        ÄndernFehler --> [*]
     }
 
-    state Anlegen {
-      state DatenValide <<choice>>
-      [*] --> DatenValide : Button "Buch anlegen"
-      DatenValide --> DatenValide : Daten fehlerhaft
-      DatenValide --> Warten : Daten valide
-      Warten --> Bücher : Buch angelegt
-      Warten --> NetworkError : Fehler
-      NetworkError --> [*]
-    }
+    state BuchAnlegenFormular {
+        state "Warten" as AnlegenWarten
+        state "Fehlermeldung" as AnlegenFehler
+        state AnlegenDatenValide <<choice>>
 
+        [*] --> AnlegenDatenValide : Button "Buch anlegen"
+        AnlegenDatenValide --> AnlegenDatenValide : Daten fehlerhaft
+        AnlegenDatenValide --> AnlegenWarten : Daten valide
+        AnlegenWarten --> Bücher : Buch angelegt
+        AnlegenWarten --> AnlegenFehler : Fehler
+        AnlegenFehler --> [*]
+    }
 }
+
+footer (c) swews23gr2
 
 @enduml
