@@ -37,10 +37,11 @@ export const BuecherCardViewComponent: React.FC<Props> = (props: Props) => {
 const styles: ExtendedStyleProps = {
     cardListContainer: () => ({
         style: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: 'var(--gap-1)',
-            justifyContent: 'center',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyItems: 'flex-start',
+            gap: 'var(--gap-3)',
+            justifyContent: 'flex-start',
         },
     }),
 
@@ -49,6 +50,7 @@ const styles: ExtendedStyleProps = {
             display: 'grid',
             justifyItems: 'center',
             justifyContent: 'center',
+            cursor: 'pointer',
         },
     }),
 

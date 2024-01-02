@@ -6,6 +6,7 @@ import {
     faBook,
     faHouse,
     faPlus,
+    faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { usePathname, useRouter } from 'next/navigation';
@@ -59,6 +60,17 @@ export const useApplicationNavigation = (): ApplicationNavigation => {
             ),
             isActive: pathname.includes('/anlegen'),
             onClick: () => router.push('/anlegen'),
+        },
+        {
+            label: 'Suchen',
+            icon: (
+                <FontAwesomeIcon
+                    icon={faMagnifyingGlass}
+                    style={{ color: 'black', fontSize: 20 }}
+                />
+            ),
+            isActive: pathname.includes('/suchen'),
+            onClick: () => router.push('/suchen'),
         },
         {
             label: `${

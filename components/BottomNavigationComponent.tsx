@@ -17,7 +17,7 @@ export const BottomNavigationComponent: React.FC = () => {
                             <React.Fragment key={button.label}>
                                 <div
                                     onClick={button.onClick}
-                                    {...styles.navButtonItem()}
+                                    {...styles.navButtonItem(button.isActive)}
                                 >
                                     {button.icon}
                                     {button.label}
@@ -56,7 +56,7 @@ const styles: ExtendedStyleProps = {
 
     buttonsListContainer: () => ({
         style: {
-            gap: 'var(--gap-2)',
+            gap: 'var(--gap-1)',
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -64,7 +64,7 @@ const styles: ExtendedStyleProps = {
         },
     }),
 
-    navButtonItem: () => ({
+    navButtonItem: (isActive: boolean) => ({
         style: {
             display: 'grid',
             justifyContent: 'center',
@@ -74,6 +74,9 @@ const styles: ExtendedStyleProps = {
             padding: 'var(--padding-1)',
             borderRadius: '5px',
             width: '85px',
+            color: isActive ? 'var(--color-white)' : 'unset',
+            backgroundColor: isActive ? 'var(--color-main)' : 'unset',
+            cursor: 'pointer',
         },
     }),
 };

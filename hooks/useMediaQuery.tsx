@@ -1,16 +1,29 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+'use client';
 import { useEffect, useState } from 'react';
+
+const MAX_VIEWPORT_WIDTH_ON_MOBILE = 992;
 
 type MediaQuerySize = {
     isSmall: boolean;
-    isMedium: boolean;
     isLarge: boolean;
 };
 export const useMediaQuery = (): MediaQuerySize => {
     const [isSmall, setIsSmall] = useState<boolean>(false);
-    const [isMedium, setIsMedium] = useState<boolean>(false);
     const [isLarge, setIsLarge] = useState<boolean>(false);
 
     useEffect(() => {
+        (() => {
+            if (window.innerWidth <= MAX_VIEWPORT_WIDTH_ON_MOBILE) {
+                setIsSmall(true);
+                setIsLarge(false);
+                return;
+            }
+            setIsSmall(false);
+            setIsLarge(true);
+        })();
+
         window.addEventListener('resize', handleScreenSize);
         return () => {
             window.removeEventListener('resize', handleScreenSize);
@@ -19,33 +32,20 @@ export const useMediaQuery = (): MediaQuerySize => {
 
     const handleScreenSize = (uiEvent: UIEvent) => {
         const { currentTarget } = uiEvent;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
+        // @ts-ignore
         const { innerWidth } = currentTarget as EventTarget;
 
-        if (innerWidth >= 576 && innerWidth <= 768) {
+        if (innerWidth <= MAX_VIEWPORT_WIDTH_ON_MOBILE) {
             setIsSmall(true);
-            setIsMedium(false);
             setIsLarge(false);
             return;
         }
-
-        if (innerWidth > 768 && innerWidth <= 992) {
-            setIsSmall(true);
-            setIsMedium(true);
-            setIsLarge(false);
-            return;
-        }
-
         setIsSmall(false);
-        setIsMedium(false);
         setIsLarge(true);
-        return;
     };
 
     return {
         isSmall,
-        isMedium,
         isLarge,
     };
 };
