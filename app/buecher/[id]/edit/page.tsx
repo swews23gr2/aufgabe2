@@ -24,7 +24,7 @@ export default function Update() {
     const { id } = useParams<{ id: string }>();
     const { errors } = formState;
     const [response, setResponse] = useState<string | undefined>(undefined);
-    const [errorCreate, setErrorCreate] = useState<string | undefined>(
+    const [errorUpdate, setErrorUpdate] = useState<string | undefined>(
         undefined,
     );
     const router = useRouter();
@@ -69,7 +69,7 @@ export default function Update() {
 
     const onSubmit = async (data: BuchUpdateModell) => {
         setResponse(undefined);
-        setErrorCreate(undefined);
+        setErrorUpdate(undefined);
         if (buch === undefined) return;
         data.id = buch?.id.toString();
         data.version = buch?.version;
@@ -82,7 +82,7 @@ export default function Update() {
             router.push(`/buecher/${id}`);
         } catch (err) {
             console.log(err);
-            setErrorCreate((err as Error).message);
+            setErrorUpdate((err as Error).message);
         }
     };
 
@@ -99,7 +99,7 @@ export default function Update() {
             </span>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
-                    htmlForLabel="isbn"
+                    htmlforlabel="isbn"
                     label="ISBN"
                     error={errors.isbn?.message}
                     className="form-control"
@@ -118,7 +118,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="preis"
+                    htmlforlabel="preis"
                     label="Preis"
                     error={errors.preis?.message}
                     className="form-control"
@@ -142,7 +142,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rating"
+                    htmlforlabel="rating"
                     label="Rating"
                     error={errors.rating?.message}
                     className="form-control"
@@ -165,7 +165,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="rabatt"
+                    htmlforlabel="rabatt"
                     label="Rabatt %"
                     error={errors.rabatt?.message}
                     className="form-control"
@@ -181,7 +181,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="erscheinungsdatum"
+                    htmlforlabel="erscheinungsdatum"
                     label="Erscheinungsdatum"
                     error={errors.datum?.message}
                     className="form-control"
@@ -201,7 +201,7 @@ export default function Update() {
                     })}
                 />
                 <InputFieldValidationComponent
-                    htmlForLabel="homepage"
+                    htmlforlabel="homepage"
                     label="Homepage"
                     error={errors.homepage?.message}
                     className="form-control"
@@ -305,9 +305,9 @@ export default function Update() {
                         Buch: {response} wurde erfolgreich geändert!
                     </div>
                 ) : null}
-                {errorCreate ? (
+                {errorUpdate ? (
                     <div>
-                        <ErrorBannerComponent message={errorCreate} />
+                        <ErrorBannerComponent message={errorUpdate} />
                     </div>
                 ) : null}
             </form>
