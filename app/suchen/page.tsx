@@ -43,7 +43,7 @@ const SuchFormular: React.FC = () => {
     const renderInputField = (props: InputHTMLAttributes<any>) => {
         const { id, value } = props;
         return (
-            <div key={id}>
+            <div key={id} {...styles.inputField()}>
                 <input {...props} />
                 <label htmlFor={id}>{value}</label>
             </div>
@@ -68,16 +68,16 @@ const SuchFormular: React.FC = () => {
                         {renderInputField({
                             type: 'radio',
                             id: 'KINDLE',
-                            value: 'KINDLE',
-                            checked: searchCriteria.art === 'KINDLE',
+                            value: 'Kindle',
+                            checked: searchCriteria.art === 'Kindle',
                             onChange: (e: ChangeEvent<HTMLInputElement>) =>
                                 handleRadioboxChange(e, 'art'),
                         })}
                         {renderInputField({
                             type: 'radio',
                             id: 'DRUCKAUSGABE',
-                            value: 'DRUCKAUSGABE',
-                            checked: searchCriteria.art === 'DRUCKAUSGABE',
+                            value: 'Druckausgabe',
+                            checked: searchCriteria.art === 'Druckausgabe',
                             onChange: (e: ChangeEvent<HTMLInputElement>) =>
                                 handleRadioboxChange(e, 'art'),
                         })}
@@ -112,6 +112,12 @@ const SuchFormular: React.FC = () => {
 };
 
 const styles: ExtendedStyleProps = {
+    inputField: () => ({
+        style: {
+            display: 'flex',
+            gap: 'var(--gap-1)',
+        },
+    }),
     radioButtonContainer: () => ({
         style: {
             display: 'flex',
