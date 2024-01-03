@@ -1,0 +1,15 @@
+services:
+  spa:
+    image: swews23gr2/spa:2023.12.0-distroless-standalone
+    ports:
+      - published: 3001
+        target: 3000
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
