@@ -43,11 +43,21 @@ const SuchFormular: React.FC = () => {
     const renderInputField = (props: InputHTMLAttributes<any>) => {
         const { id, value } = props;
         return (
-            <div key={id}>
+            <div key={id} {...styles.inputField()}>
                 <input {...props} />
                 <label htmlFor={id}>{value}</label>
             </div>
         );
+    };
+
+    const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        setSearchCriteria((prevCriteria) => {
+            const updatedCriteria = { ...prevCriteria };
+            isNaN(parseInt(e.target.value))
+                ? delete updatedCriteria['rating']
+                : (updatedCriteria['rating'] = e.target.value);
+            return updatedCriteria;
+        });
     };
 
     return (
@@ -58,16 +68,16 @@ const SuchFormular: React.FC = () => {
                         {renderInputField({
                             type: 'radio',
                             id: 'KINDLE',
-                            value: 'KINDLE',
-                            checked: searchCriteria.art === 'KINDLE',
+                            value: 'Kindle',
+                            checked: searchCriteria.art === 'Kindle',
                             onChange: (e: ChangeEvent<HTMLInputElement>) =>
                                 handleRadioboxChange(e, 'art'),
                         })}
                         {renderInputField({
                             type: 'radio',
                             id: 'DRUCKAUSGABE',
-                            value: 'DRUCKAUSGABE',
-                            checked: searchCriteria.art === 'DRUCKAUSGABE',
+                            value: 'Druckausgabe',
+                            checked: searchCriteria.art === 'Druckausgabe',
                             onChange: (e: ChangeEvent<HTMLInputElement>) =>
                                 handleRadioboxChange(e, 'art'),
                         })}
@@ -81,6 +91,15 @@ const SuchFormular: React.FC = () => {
                                 handleCheckboxChange(e, 'titel'),
                         })}
                     </div>
+                    <select onChange={(e) => handleSelectionChange(e)}>
+                        <option selected>Bewertung wählen</option>
+                        <option value="1">1 Stern</option>
+                        <option value="2">2 Sterne</option>
+                        <option value="3">3 Sterne</option>
+                        <option value="4">4 Sterne</option>
+                        <option value="5">5 Sterne</option>
+                        <option value="0">Keine Bewertung</option>
+                    </select>
                 </div>
                 {/* Hier weitere Eingabefelder einfügen */}
                 <div>
@@ -94,6 +113,12 @@ const SuchFormular: React.FC = () => {
 };
 
 const styles: ExtendedStyleProps = {
+    inputField: () => ({
+        style: {
+            display: 'flex',
+            gap: 'var(--gap-1)',
+        },
+    }),
     radioButtonContainer: () => ({
         style: {
             display: 'flex',
@@ -108,6 +133,10 @@ const styles: ExtendedStyleProps = {
     }),
     searchBar: () => ({
         style: {
+            border: 'var(--br-8xs) solid var(--color-main)',
+            borderRadius: '5px',
+            padding: 'var(--padding-1)',
+            marginBottom: 'var(--padding-2)',
             display: 'flex',
             flexDirection: 'row',
             gap: 'var(--gap-4)',

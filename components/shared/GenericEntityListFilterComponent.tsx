@@ -34,7 +34,7 @@ export const GenericEntityListFilerComponent: React.FC<
                 ? []
                 : buecher.filter((b) => {
                       const entries = Object.entries(b);
-                      return Object.entries(searchCriteria).some((a) =>
+                      return Object.entries(searchCriteria).every((a) =>
                           entries.find((e) => {
                               return (
                                   e[0] === a[0] &&
