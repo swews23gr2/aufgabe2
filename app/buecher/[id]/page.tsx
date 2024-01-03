@@ -4,7 +4,6 @@
 import React from 'react';
 import PageContentWrapperComponent from '@/components/shared/PageContentWrapperComponent';
 import { useParams, useRouter } from 'next/navigation';
-import { useFetch } from '@/hooks/useFetch';
 import { Buch } from '@/api/buch';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
@@ -19,6 +18,7 @@ import {
     BuchDetailsComponent,
     ListEntry,
 } from '@/components/BuchDetailsComponent';
+import useSWR from 'swr';
 
 const BuchItem: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -30,7 +30,7 @@ const BuchItem: React.FC = () => {
         data: buch,
         isLoading,
         error,
-    } = useFetch<Buch>(appContext.getBuchById(Number(id)));
+    } = useSWR<Buch, string>(`${id}`, () => appContext.getBuchById(Number(id)));
 
     const handleDelete = async () => {
         await appContext.deleteBuch(Number(id));
@@ -66,7 +66,7 @@ const BuchItem: React.FC = () => {
     if (error !== undefined) return <ErrorBannerComponent message={error} />;
 
     return (
-        <PageContentWrapperComponent title={`Buchdetails - ${buch.titel}`}>
+        <PageContentWrapperComponent title={`Buchdetails - ${buch?.titel}`}>
             <div {...styles.pageContainer(isSmall)}>
                 <div {...styles.bookPictureAndIconContainer()}>
                     <div {...styles.bookPicture()}></div>
@@ -92,7 +92,7 @@ const BuchItem: React.FC = () => {
             <CenteredSectionComponent>
                 <div {...styles.secondSectionTitle()}>Vergleichbare Bücher</div>
                 <GenericEntityListFilerComponent
-                    searchCriteria={{ art: buch.art }}
+                    searchCriteria={{ art: buch?.art }}
                 />
             </CenteredSectionComponent>
         </PageContentWrapperComponent>
