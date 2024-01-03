@@ -20,7 +20,7 @@ export const RatingComponent: React.FC<PropsRating> = (props: PropsRating) => {
                 <FontAwesomeIcon
                     key={v}
                     icon={faStar}
-                    {...styles.star(index <= stars)}
+                    {...styles.star(index < stars)}
                 />
             ))}
         </div>

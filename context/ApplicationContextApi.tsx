@@ -37,7 +37,7 @@ type ContextOutput = {
     ) => void;
     getBuchById: (id: number) => Promise<Buch>;
     getAlleBuecher: () => Promise<Buch[]>;
-    createBuch: (buchInputModell: BuchInputModell) => Promise<void>;
+    createBuch: (buchInputModell: BuchInputModell) => Promise<AxiosResponse>;
     updateBuch: (buch: BuchUpdateModell) => Promise<void>;
     deleteBuch: (id: number) => Promise<void>;
 };
@@ -113,7 +113,7 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
 
     const createBuch = async (
         buchInputModell: BuchInputModell,
-    ): Promise<void> => {
+    ): Promise<AxiosResponse> => {
         const createBuchResponse = await createBuchApi(
             buchInputModell,
             baseAxiosRequestConfig,
@@ -121,6 +121,7 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
         handleGraphQLRequestError(
             createBuchResponse.data as unknown as GraphqlErrorResponse,
         );
+        return createBuchResponse;
     };
 
     const updateBuch = async (buch: BuchUpdateModell): Promise<void> => {
