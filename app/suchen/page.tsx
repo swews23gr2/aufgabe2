@@ -93,11 +93,12 @@ const SuchFormular: React.FC = () => {
                     </div>
                     <select onChange={(e) => handleSelectionChange(e)}>
                         <option selected>Bewertung wählen</option>
-                        <option value="0">1 Stern</option>
-                        <option value="1">2 Sterne</option>
-                        <option value="2">3 Sterne</option>
-                        <option value="3">4 Sterne</option>
-                        <option value="4">5 Sterne</option>
+                        <option value="1">1 Stern</option>
+                        <option value="2">2 Sterne</option>
+                        <option value="3">3 Sterne</option>
+                        <option value="4">4 Sterne</option>
+                        <option value="5">5 Sterne</option>
+                        <option value="0">Keine Bewertung</option>
                     </select>
                 </div>
                 {/* Hier weitere Eingabefelder einfügen */}
