@@ -151,12 +151,12 @@ export default function Update() {
                     placeholder="Rating"
                     rest={register('rating', {
                         min: {
-                            value: 1,
-                            message: 'Rating muss zwischen 1-5 sein!',
+                            value: 0,
+                            message: 'Rating muss zwischen 0-5 sein!',
                         },
                         max: {
                             value: 5,
-                            message: 'Rating muss zwischen 1-5 sein!',
+                            message: 'Rating muss zwischen 0-5 sein!',
                         },
                         required: {
                             value: true,
