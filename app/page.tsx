@@ -38,13 +38,13 @@ export default function Home() {
             title: 'Überschrift Feature 1',
             beschreibung:
                 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua',
-            image: '/hero_white_alt_alt_large.jpg',
+            image: '/buch-web/hero_white_alt_alt_large.jpg',
         },
         {
             title: 'Überschrift Feature 2',
             beschreibung:
                 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua',
-            image: '/hero_white_alt_alt_large.jpg',
+            image: '/buch-web/hero_white_alt_alt_large.jpg',
         },
     ];
 
@@ -83,7 +83,7 @@ export default function Home() {
                             <Image
                                 width={769}
                                 height={646}
-                                src={'/hero_alt_alt_large.png'}
+                                src={'/buch-web/hero_alt_alt_large.png'}
                                 {...styles.heroSectionImage(isSmall)}
                                 alt={'Bild des Hero-Abschnitt'}
                             />

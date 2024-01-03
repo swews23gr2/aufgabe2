@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    basePath: '/buch-web',
+    output: 'standalone',
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
