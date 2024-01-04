@@ -48,12 +48,12 @@ export default function Create() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
                     htmlforlabel="isbn"
-                    label="ISBN"
+                    label="ISBN-13"
                     error={errors.isbn?.message}
                     className="form-control"
                     type="text"
                     id="isbn"
-                    placeholder="ISBN"
+                    placeholder="ISBN-13"
                     rest={register('isbn', {
                         required: {
                             value: true,
@@ -88,7 +88,13 @@ export default function Create() {
                     type="text"
                     id="untertitel"
                     placeholder="Untertitel"
-                    rest={register('untertitel')}
+                    rest={register('untertitel', {
+                        maxLength: {
+                            value: 40,
+                            message:
+                                'Untertitel darf maximal 40 Zeichen lang sein!',
+                        },
+                    })}
                 />
                 <InputFieldValidationComponent
                     htmlforlabel="preis"
