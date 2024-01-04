@@ -17,7 +17,7 @@ export const NavigationBarComponent: React.FC = () => {
                 <Link href="/" {...styles.brand()}>
                     HKA Bücherverwaltung
                 </Link>
-                {appContext.tokenExistsAndIsValid() && appContext.isMounted ? (
+                {appContext.tokenExistsAndIsValid() && appContext.isClient ? (
                     <div {...styles.navbarButtonContainer()}>
                         {navigationButtons.map((button) => (
                             <button

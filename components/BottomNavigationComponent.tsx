@@ -12,7 +12,7 @@ export const BottomNavigationComponent: React.FC = () => {
         <div {...styles.bottomNavContainer()}>
             <div {...styles.bottomNavContent()}>
                 <div {...styles.buttonsListContainer()}>
-                    {appContext.isMounted &&
+                    {appContext.isClient &&
                         navigationButtons.map((button) => (
                             <React.Fragment key={button.label}>
                                 <div
