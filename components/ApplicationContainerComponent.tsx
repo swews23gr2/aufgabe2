@@ -25,7 +25,7 @@ export const ApplicationContainerComponent: React.FC<Props> = (
     return (
         <div {...styles.appContainer()}>
             <NavigationBarComponent />
-            {appContext.isMounted && tokenIsValid ? (
+            {appContext.isClient && tokenIsValid ? (
                 <main {...styles.mainContentContainer()}>{props.children}</main>
             ) : (
                 <LoginComponent />

@@ -28,7 +28,7 @@ import {
 } from '@/api/buch';
 
 type ContextOutput = {
-    isMounted: boolean;
+    isClient: boolean;
     login: (loginDaten: LoginDaten) => Promise<void>;
     logout: () => void;
     tokenExistsAndIsValid: () => boolean;
@@ -52,10 +52,10 @@ export const useApplicationContextApi = () => {
 type Props = PropsWithChildren;
 export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     const { children } = props;
-    const [isMounted, setIsMounted] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        setIsMounted(true);
+        setIsClient(true);
     }, []);
 
     const authenticationToken =
@@ -198,7 +198,7 @@ export const ApplicationContextProvider: React.FC<Props> = (props: Props) => {
     return (
         <ApplicationContext.Provider
             value={{
-                isMounted,
+                isClient,
                 login,
                 logout,
                 tokenExistsAndIsValid,
