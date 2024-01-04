@@ -53,6 +53,7 @@ const styles: ExtendedStyleProps = {
             display: 'grid',
             justifyItems: 'center',
             justifyContent: 'center',
+            cursor: 'pointer',
         },
     }),
 
