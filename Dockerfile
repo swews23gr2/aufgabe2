@@ -11,7 +11,7 @@ FROM node:${NODE_VERSION}-bookworm-slim AS builder
 
 WORKDIR /home/node
 
-COPY package.json package-lock.json next.config.mjs tsconfig*.json ./
+COPY package.json package-lock.json next.config.js tsconfig*.json ./
 COPY api ./api
 COPY app ./app
 COPY components ./components
