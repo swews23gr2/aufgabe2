@@ -1,7 +1,7 @@
 # https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 
 # Großes Image für "next start"
-# In "next.config.mjs" ggf. "output: 'standalone'" vorher auskommentieren
+# In "next.config.js" ggf. "output: 'standalone'" vorher auskommentieren
 # Befehl: docker buildx build --no-cache --tag swews23gr2/spa:2023.12.0-modules --file Dockerfile.modules .
 
 # ---------------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ FROM node:${NODE_VERSION}-bookworm AS builder
 
 WORKDIR /home/node
 
-COPY package.json package-lock.json next.config.mjs tsconfig*.json ./
+COPY package.json package-lock.json next.config.js tsconfig*.json ./
 COPY api ./api
 COPY app ./app
 COPY components ./components
