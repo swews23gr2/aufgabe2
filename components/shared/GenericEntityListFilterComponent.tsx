@@ -4,12 +4,12 @@
 import React, { useEffect, useState } from 'react';
 import { Buch } from '@/api/buch';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { useFetch } from '@/hooks/useFetch';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { BuecherCardViewComponent } from '@/components/BuecherCardViewComponent';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ChipListComponent } from '@/components/shared/ChipListComponent';
+import useSWR from 'swr';
 
 export type PropsGenericEntityListFiler<T> = {
     searchCriteria: {
@@ -26,7 +26,7 @@ export const GenericEntityListFilerComponent: React.FC<
         data: buecher,
         isLoading,
         error,
-    } = useFetch<Buch[]>(appContext.getAlleBuecher());
+    } = useSWR<Buch[], string>('GetAlleBuecher', appContext.getAlleBuecher);
 
     useEffect(() => {
         const filterBooks = (): Buch[] => {
@@ -34,7 +34,7 @@ export const GenericEntityListFilerComponent: React.FC<
                 ? []
                 : buecher.filter((b) => {
                       const entries = Object.entries(b);
-                      return Object.entries(searchCriteria).some((a) =>
+                      return Object.entries(searchCriteria).every((a) =>
                           entries.find((e) => {
                               return (
                                   e[0] === a[0] &&

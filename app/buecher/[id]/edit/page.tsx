@@ -8,52 +8,101 @@
 /* eslint-disable no-useless-escape */
 'use client';
 import { useForm } from 'react-hook-form';
-import { BuchInputModell } from '../../api/buch';
-import React, { useState } from 'react';
+import { BuchUpdateModell, Buch } from '@/api/buch';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
+import { LoadingComponent } from '@/components/shared/LoadingComponent';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
-export default function Create() {
-    const appContext = useApplicationContextApi();
-    const { register, handleSubmit, formState, reset } =
-        useForm<BuchInputModell>({ mode: 'onBlur' });
+export default function Update() {
+    const { register, handleSubmit, formState, reset, setValue } =
+        useForm<BuchUpdateModell>({ mode: 'onBlur' });
+    const { id } = useParams<{ id: string }>();
     const { errors } = formState;
-    const [response, setResponse] = useState<string>();
-    const [error, setError] = useState<string | undefined>(undefined);
+    const [response, setResponse] = useState<string | undefined>(undefined);
+    const [errorUpdate, setErrorUpdate] = useState<string | undefined>(
+        undefined,
+    );
     const router = useRouter();
+    const appContext = useApplicationContextApi();
 
-    const onSubmit = async (data: BuchInputModell) => {
-        console.log('Form submitted', data);
+    const {
+        data: buch,
+        error,
+        isLoading,
+    } = useSWR<Buch, string>(`${id}`, () => appContext.getBuchById(Number(id)));
+
+    const toRabatt = (rabatt: string | undefined): number => {
+        if (rabatt === undefined) return 0;
+        const clear = rabatt.replace('%', '');
+        return Number(clear);
+    };
+
+    const DateToString = (date: Date | undefined): string => {
+        if (date === undefined) return '';
+        return new Intl.DateTimeFormat('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        }).format(date);
+    };
+    const BooleanToString = (lieferbar: boolean): string =>
+        lieferbar ? 'true' : 'false';
+
+    useEffect(() => {
+        if (buch === undefined) return;
+        setValue('schlagwoerter', buch.schlagwoerter);
+        setValue('art', buch.art);
+        setValue('lieferbar', BooleanToString(buch.lieferbar));
+        setValue('isbn', buch.isbn);
+        setValue('preis', buch.preis);
+        setValue('rating', buch.rating);
+        setValue('rabatt', toRabatt(buch.rabatt));
+        setValue('homepage', buch.homepage);
+    }, [buch, setValue]);
+
+    const onSubmit = async (data: BuchUpdateModell) => {
         setResponse(undefined);
-        setError(undefined);
+        setErrorUpdate(undefined);
+        if (buch === undefined) return;
+        data.id = buch?.id.toString();
+        data.version = buch?.version;
+        console.log('Form submitted', data);
         try {
-            await appContext.createBuch(data);
-            setResponse(data.titel.titel);
+            await appContext.updateBuch(data);
+            setResponse(buch?.titel);
             reset();
-            setTimeout(() => {
-                router.push('/buecher');
-            }, 3000);
+            router.push(`/buecher/${id}`);
         } catch (err) {
             console.log(err);
-            setError((err as Error).message);
+            setErrorUpdate((err as Error).message);
         }
     };
 
+    if (isLoading)
+        return <LoadingComponent message={'Buchdaten werden geladen'} />;
+
+    if (error !== undefined) return <ErrorBannerComponent message={error} />;
+
     return (
         <div className="container">
-            <h1 {...styles.title()}>Buch anlegen</h1>
+            <h1 {...styles.title()}>Buch: {buch?.titel} ändern</h1>
+            <span {...styles.info()}>
+                Titel und Untertitel können nicht geändert werden!
+            </span>
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
                     htmlforlabel="isbn"
-                    label="ISBN-13"
+                    label="ISBN"
                     error={errors.isbn?.message}
                     className="form-control"
                     type="text"
                     id="isbn"
-                    placeholder="ISBN-13"
+                    placeholder="ISBN"
                     rest={register('isbn', {
                         required: {
                             value: true,
@@ -62,37 +111,6 @@ export default function Create() {
                         pattern: {
                             value: /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/,
                             message: 'ISBN ist ungültig!',
-                        },
-                    })}
-                />
-                <InputFieldValidationComponent
-                    htmlforlabel="titel"
-                    label="Titel"
-                    error={errors.titel?.titel?.message}
-                    className="form-control"
-                    type="text"
-                    id="titel"
-                    placeholder="Titel"
-                    rest={register('titel.titel', {
-                        required: {
-                            value: true,
-                            message: 'Titel ist erforderlich!',
-                        },
-                    })}
-                />
-                <InputFieldValidationComponent
-                    htmlforlabel="untertitel"
-                    label="Untertitel"
-                    error={errors.untertitel?.message}
-                    className="form-control"
-                    type="text"
-                    id="untertitel"
-                    placeholder="Untertitel"
-                    rest={register('untertitel', {
-                        maxLength: {
-                            value: 40,
-                            message:
-                                'Untertitel darf maximal 40 Zeichen lang sein!',
                         },
                     })}
                 />
@@ -164,14 +182,18 @@ export default function Create() {
                     label="Erscheinungsdatum"
                     error={errors.datum?.message}
                     className="form-control"
-                    type="date"
+                    type="text"
                     id="erscheinungsdatum"
                     placeholder="Erscheinungsdatum"
+                    defaultValue={DateToString(buch?.datum)}
                     rest={register('datum', {
-                        valueAsDate: true,
                         required: {
                             value: true,
                             message: 'Erscheinungsdatum ist erforderlich!',
+                        },
+                        pattern: {
+                            value: /^[0-3]?[0-9][/.][0-3]?[0-9][/.](?:[0-9]{2})?[0-9]{2}$/,
+                            message: 'Datum ist ungültig!',
                         },
                     })}
                 />
@@ -200,7 +222,7 @@ export default function Create() {
                         className="form-check-input"
                         type="radio"
                         id="druckausgabe"
-                        value={'Druckausgabe'}
+                        value={'DRUCKAUSGABE'}
                         {...register('art')}
                         defaultChecked
                     />
@@ -213,7 +235,7 @@ export default function Create() {
                         className="form-check-input"
                         type="radio"
                         id="kindle"
-                        value={'Kindle'}
+                        value={'KINDLE'}
                         {...register('art')}
                     />
                     <label className="form-check-label" htmlFor="kindle">
@@ -273,16 +295,16 @@ export default function Create() {
                     </label>
                 </div>
                 <button type="submit" {...styles.submitButton()}>
-                    Buch anlegen
+                    Buch ändern
                 </button>
                 {response ? (
                     <div className="alert alert-success" role="alert">
-                        Buch: {response} wurde erfolgreich angelegt!
+                        Buch: {response} wurde erfolgreich geändert!
                     </div>
                 ) : null}
-                {error ? (
+                {errorUpdate ? (
                     <div>
-                        <ErrorBannerComponent message={error} />
+                        <ErrorBannerComponent message={errorUpdate} />
                     </div>
                 ) : null}
             </form>
@@ -305,7 +327,7 @@ const styles: ExtendedStyleProps = {
             fontSize: 'var(--font-extra-large-size)',
             fontWeight: '600',
             justifySelf: 'center',
-            marginBottom: 'var(--gap-2)',
+            marginBottom: 'var(--gap-0)',
             marginTop: 'var(--gap-4)',
         },
     }),
@@ -316,6 +338,13 @@ const styles: ExtendedStyleProps = {
             justifySelf: 'center',
             marginBottom: 'var(--gap-1)',
             marginTop: 'var(--gap-2)',
+        },
+    }),
+    info: () => ({
+        className: 'badge rounded-pill text-bg-warning',
+        style: {
+            marginBottom: 'var(--gap-2)',
+            marginTop: 'var(--gap-0)',
         },
     }),
 };

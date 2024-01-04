@@ -3,6 +3,7 @@ import React from 'react';
 import { Buch } from '@/api/buch';
 import { useRouter } from 'next/navigation';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 type Props = {
     buecher: Buch[];
@@ -11,6 +12,7 @@ type Props = {
 export const BuecherTabelleComponent: React.FC<Props> = (props: Props) => {
     const { buecher } = props;
     const router = useRouter();
+    const { isSmall } = useMediaQuery();
 
     const schlagwoerterExist = (
         schlagwoerter: string[] | undefined | null,
@@ -27,11 +29,11 @@ export const BuecherTabelleComponent: React.FC<Props> = (props: Props) => {
             <thead>
                 <tr>
                     <th scope="col">Titel</th>
-                    <th scope="col">Isbn</th>
+                    {isSmall ? null : <th scope="col">Isbn</th>}
                     <th scope="col">Art</th>
-                    <th scope="col">Homepage</th>
+                    {isSmall ? null : <th scope="col">Homepage</th>}
                     <th scope="col">Preis</th>
-                    <th scope="col">Schlagwörter</th>
+                    {isSmall ? null : <th scope="col">Schlagwörter</th>}
                 </tr>
             </thead>
             <tbody>
@@ -41,26 +43,28 @@ export const BuecherTabelleComponent: React.FC<Props> = (props: Props) => {
                         onClick={() => router.push(`/buecher/${buch.id}`)}
                     >
                         <td>{buch.titel}</td>
-                        <td>{buch.isbn}</td>
+                        {isSmall ? null : <td>{buch.isbn}</td>}
                         <td>{buch.art}</td>
-                        <td>{buch.homepage}</td>
+                        {isSmall ? null : <td>{buch.homepage}</td>}
                         <td>{`${buch.preis} €`}</td>
-                        <td style={{ maxWidth: '200px' }}>
-                            <div {...styles.keyWordListContainer()}>
-                                {schlagwoerterExist(buch.schlagwoerter) ? (
-                                    buch.schlagwoerter.map((word) => (
-                                        <div
-                                            key={word}
-                                            {...styles.keyWordItem()}
-                                        >
-                                            {word.toLowerCase()}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div>Kein Schlagwort vorhanden!</div>
-                                )}
-                            </div>
-                        </td>
+                        {isSmall ? null : (
+                            <td style={{ maxWidth: '200px' }}>
+                                <div {...styles.keyWordListContainer()}>
+                                    {schlagwoerterExist(buch.schlagwoerter) ? (
+                                        buch.schlagwoerter.map((word) => (
+                                            <div
+                                                key={word}
+                                                {...styles.keyWordItem()}
+                                            >
+                                                {word.toLowerCase()}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>Kein Schlagwort vorhanden!</p>
+                                    )}
+                                </div>
+                            </td>
+                        )}
                     </tr>
                 ))}
             </tbody>

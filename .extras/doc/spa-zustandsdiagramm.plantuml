@@ -1,0 +1,46 @@
+@startuml "Buch anlegen"
+
+state IndexTsx {
+    [*] --> Anmeldung
+    Anmeldung --> Startseite : Logindaten korrekt
+    Anmeldung --> [*] : Logindaten inkorrekt
+
+    Startseite --> Bücher : Menüpunkt "Bücher"
+    Startseite --> BuchAnlegenFormular: Menüpunkt "Anlegen"
+    Startseite --> Anmeldung: Menüpunkt "Abmelden"
+
+    Buchdetails --> BuchÄndernFormular : Button "Bearbeiten"
+    Buchdetails  --> Bücher : Button "Buch löschen"
+
+    Bücher --> Buchdetails : Buch anklicken
+
+    state BuchÄndernFormular {
+        state "Warten" as ÄndernWarten
+        state "Fehlermeldung" as ÄndernFehler
+        state ÄndernDatenValide <<choice>>
+
+        [*] --> ÄndernDatenValide : Button "Buch ändern"
+        ÄndernDatenValide --> ÄndernWarten : Daten valide
+        ÄndernDatenValide --> ÄndernDatenValide : Daten fehlerhaft
+        ÄndernWarten --> Buchdetails : Buch geändert
+        ÄndernWarten --> ÄndernFehler : Fehler
+        ÄndernFehler --> [*]
+    }
+
+    state BuchAnlegenFormular {
+        state "Warten" as AnlegenWarten
+        state "Fehlermeldung" as AnlegenFehler
+        state AnlegenDatenValide <<choice>>
+
+        [*] --> AnlegenDatenValide : Button "Buch anlegen"
+        AnlegenDatenValide --> AnlegenDatenValide : Daten fehlerhaft
+        AnlegenDatenValide --> AnlegenWarten : Daten valide
+        AnlegenWarten --> Bücher : Buch angelegt
+        AnlegenWarten --> AnlegenFehler : Fehler
+        AnlegenFehler --> [*]
+    }
+}
+
+footer (c) swews23gr2
+
+@enduml

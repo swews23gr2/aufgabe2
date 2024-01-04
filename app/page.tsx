@@ -35,15 +35,15 @@ export default function Home() {
 
     const featuresDerSoftware: SoftwareFeature[] = [
         {
-            title: 'Überschrift Feature 1',
+            title: 'Alle Bücher an einem Ort',
             beschreibung:
-                'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua',
+                'Erleben Sie mit unserer modernen Buchsoftware eine mühelose Suche nach Ihren Büchern. Durchsuchen Sie Ihre reichhaltige Bibliothek mit intelligenten Such- und Filterfunktionen, um Ihre Bücher einfach zu überblicken und zu verwalten.',
             image: '/hero_white_alt_alt_large.jpg',
         },
         {
-            title: 'Überschrift Feature 2',
+            title: 'Individuelle Gestaltung',
             beschreibung:
-                'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua sed diam nonumy invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua',
+                'Verwalten Sie Ihre Bibliothek so, wie es Ihnen gefällt. Mit unserer Software können Sie Bücher kinderleicht hinzufügen, detailliert bearbeiten oder entfernen. Unsere moderne Benutzeroberfläche macht das Organisieren Ihrer Büchersammlung so einfach wie nie zuvor.',
             image: '/hero_white_alt_alt_large.jpg',
         },
     ];
@@ -59,10 +59,12 @@ export default function Home() {
                                 Bücher verwalten
                             </div>
                             <div {...styles.heroSectionSubtitle()}>
-                                Lorem ipsum dolor sit amet, consetetur
-                                sadipscing elitr, sed diam nonumy eirmod tempor
-                                invidunt ut labore et dolore magna aliquyam
-                                erat, sed diam voluptua
+                                Unsere Software bietet eine zeitgemäße
+                                Herangehensweise an das Hinzufügen, Bearbeiten
+                                und Entfernen von Büchern – für eine
+                                unkomplizierte und effiziente Verwaltung Ihrer
+                                persönlichen Bibliothek. Entdecken Sie eine neue
+                                Dimension der Bücherorganisation!
                             </div>
                             <div {...styles.heroSectionButtonListContainer()}>
                                 {heroSectionButtons.map((button, index) => (
