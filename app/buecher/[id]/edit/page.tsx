@@ -16,7 +16,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
 import { LoadingComponent } from '@/components/shared/LoadingComponent';
 import { useEffect, useState } from 'react';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 
 export default function Update() {
     const { register, handleSubmit, formState, reset, setValue } =
@@ -35,8 +35,6 @@ export default function Update() {
         error,
         isLoading,
     } = useSWR<Buch, string>(`${id}`, () => appContext.getBuchById(Number(id)));
-
-    const { mutate } = useSWRConfig();
 
     const toRabatt = (rabatt: string | undefined): number => {
         if (rabatt === undefined) return 0;
@@ -77,7 +75,6 @@ export default function Update() {
         try {
             await appContext.updateBuch(data);
             setResponse(buch?.titel);
-            await mutate('getAlleBuecher');
             reset();
             router.push(`/buecher/${id}`);
         } catch (err) {

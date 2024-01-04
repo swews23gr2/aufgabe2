@@ -15,7 +15,6 @@ import { ErrorBannerComponent } from '@/components/shared/ErrorBannerComponent';
 import { useApplicationContextApi } from '@/context/ApplicationContextApi';
 import { useRouter } from 'next/navigation';
 import { InputFieldValidationComponent } from '@/components/shared/InputFieldValidationComponent';
-import { mutate } from 'swr';
 
 export default function Create() {
     const appContext = useApplicationContextApi();
@@ -33,7 +32,6 @@ export default function Create() {
         try {
             await appContext.createBuch(data);
             setResponse(data.titel.titel);
-            await mutate('getAlleBuecher');
             reset();
             setTimeout(() => {
                 router.push('/buecher');
@@ -50,12 +48,12 @@ export default function Create() {
             <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <InputFieldValidationComponent
                     htmlforlabel="isbn"
-                    label="ISBN"
+                    label="ISBN-13"
                     error={errors.isbn?.message}
                     className="form-control"
                     type="text"
                     id="isbn"
-                    placeholder="ISBN"
+                    placeholder="ISBN-13"
                     rest={register('isbn', {
                         required: {
                             value: true,
@@ -90,7 +88,13 @@ export default function Create() {
                     type="text"
                     id="untertitel"
                     placeholder="Untertitel"
-                    rest={register('untertitel')}
+                    rest={register('untertitel', {
+                        maxLength: {
+                            value: 40,
+                            message:
+                                'Untertitel darf maximal 40 Zeichen lang sein!',
+                        },
+                    })}
                 />
                 <InputFieldValidationComponent
                     htmlforlabel="preis"
