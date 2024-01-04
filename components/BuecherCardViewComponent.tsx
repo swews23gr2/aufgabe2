@@ -4,6 +4,7 @@ import { Buch } from '@/api/buch';
 import { useRouter } from 'next/navigation';
 import { ExtendedStyleProps } from '@/theme/ExtendedStyleProps';
 import { RatingComponent } from '@/components/shared/RatingComponent';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 type Props = {
     buecher: Buch[];
@@ -12,9 +13,10 @@ type Props = {
 export const BuecherCardViewComponent: React.FC<Props> = (props: Props) => {
     const { buecher } = props;
     const router = useRouter();
+    const { isSmall } = useMediaQuery();
 
     return (
-        <div {...styles.cardListContainer()}>
+        <div {...styles.cardListContainer(isSmall)}>
             {buecher.map((buch) => (
                 <div
                     key={buch.id}
@@ -35,12 +37,14 @@ export const BuecherCardViewComponent: React.FC<Props> = (props: Props) => {
 };
 
 const styles: ExtendedStyleProps = {
-    cardListContainer: () => ({
+    cardListContainer: (isScreenSmall: boolean) => ({
         style: {
             display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
+            gridTemplateColumns: isScreenSmall
+                ? 'repeat(2, 1fr)'
+                : 'repeat(6, 1fr)',
             gap: 'var(--gap-1)',
-            justifyContent: 'center',
+            justifyContent: isScreenSmall ? 'unset' : 'center',
         },
     }),
 
