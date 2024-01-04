@@ -266,8 +266,8 @@ const styles: ExtendedStyleProps = {
             alignContent: 'center',
             padding: `${
                 isScreenSmall
-                    ? '0 var(--padding-2) calc(2 * var(--padding-10)) var(--padding-2)'
-                    : '0 calc(2 * var(--padding-10)) calc(2 * var(--padding-10)) calc(2 * var(--padding-10))'
+                    ? '0 var(--padding-2) var(--padding-10) var(--padding-2)'
+                    : '0 var(--padding-10) var(--padding-10) var(--padding-10)'
             }`,
             justifyItems: `${isScreenSmall ? 'center' : 'unset'}`,
             textAlign: `${isScreenSmall ? 'center' : 'left'}`,
